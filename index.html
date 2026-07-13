@@ -1,0 +1,1868 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Ready Pool — Order Now</title>
+  <meta name="description" content="Review The ReadyPool checkout prototype. Simulated flow, draft pricing, no real payments." />
+
+  <!-- ============================================================
+       Ready Pool "Order Now" — INTERACTIVE SIMULATED PROTOTYPE
+       Single self-contained file. No backend, no real payments.
+       Tailwind Play CDN + Inter. Vanilla JS state machine.
+       Look/feel: "Still Water, Sunlit Deposit" build directive.
+       ============================================================ -->
+
+  <!-- Inter -->
+  <style id="inter-embedded">
+/* cyrillic-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(./assets/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2JL7SUc.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(./assets/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa0ZL7SUc.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* greek-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(./assets/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2ZL7SUc.woff2) format('woff2');
+  unicode-range: U+1F00-1FFF;
+}
+/* greek */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(./assets/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1pL7SUc.woff2) format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(./assets/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2pL7SUc.woff2) format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(./assets/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa25L7SUc.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(./assets/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(./assets/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2JL7SUc.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(./assets/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa0ZL7SUc.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* greek-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(./assets/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2ZL7SUc.woff2) format('woff2');
+  unicode-range: U+1F00-1FFF;
+}
+/* greek */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(./assets/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1pL7SUc.woff2) format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(./assets/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2pL7SUc.woff2) format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(./assets/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa25L7SUc.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(./assets/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(./assets/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2JL7SUc.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(./assets/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa0ZL7SUc.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* greek-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(./assets/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2ZL7SUc.woff2) format('woff2');
+  unicode-range: U+1F00-1FFF;
+}
+/* greek */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(./assets/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1pL7SUc.woff2) format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(./assets/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2pL7SUc.woff2) format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(./assets/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa25L7SUc.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(./assets/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(./assets/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2JL7SUc.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(./assets/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa0ZL7SUc.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* greek-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(./assets/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2ZL7SUc.woff2) format('woff2');
+  unicode-range: U+1F00-1FFF;
+}
+/* greek */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(./assets/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1pL7SUc.woff2) format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(./assets/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2pL7SUc.woff2) format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(./assets/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa25L7SUc.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(./assets/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+</style>
+
+  <!-- Tailwind Play CDN -->
+  <script src="./assets/tailwind.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              blue: '#2563eb',
+              blueDark: '#1d4ed8',
+              blueLight: '#3b82f6',
+              blueDeep: '#1e3a8a',
+              cyan: '#06b6d4',
+              cyanLight: '#22d3ee',
+              cyanDark: '#0891b2',
+              sun: '#ffd349',
+              sun2: '#fde047',
+            },
+            ink: '#111827',
+            muted: '#6b7280',
+            line: '#e5e7eb',
+            surface: '#ffffff',
+            recessed: '#f9fafb',
+          },
+          fontFamily: {
+            sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
+          },
+          borderRadius: {
+            xl: '0.875rem',
+            '2xl': '1.125rem',
+          },
+          boxShadow: {
+            sm: '0 1px 2px 0 rgba(17,24,39,0.05)',
+            md: '0 4px 16px -2px rgba(17,24,39,0.10), 0 2px 6px -2px rgba(17,24,39,0.06)',
+          },
+          maxWidth: {
+            decision: '640px',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    html, body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+    body { background: #ffffff; color: #111827; }
+    .tabular-nums { font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
+    .tracking-tight2 { letter-spacing: -0.02em; }
+
+    /* Water gradient — bookends only (hero + thank-you) */
+    .water-grad {
+      background-image: linear-gradient(120deg, #1d4ed8 0%, #2563eb 40%, #06b6d4 100%);
+    }
+    .rail-hairline {
+      background-image: linear-gradient(90deg, #2563eb 0%, #22d3ee 100%);
+    }
+
+    /* Step transitions: forward slides in from right */
+    .step-enter { animation: stepIn .28s cubic-bezier(.22,.61,.36,1) both; }
+    .step-enter-back { animation: stepInBack .28s cubic-bezier(.22,.61,.36,1) both; }
+    @keyframes stepIn { from { opacity: 0; transform: translateX(24px); } to { opacity:1; transform:none; } }
+    @keyframes stepInBack { from { opacity: 0; transform: translateX(-24px); } to { opacity:1; transform:none; } }
+
+    /* Hero -> wizard fade/rise */
+    .fade-rise { animation: fadeRise .5s cubic-bezier(.22,.61,.36,1) both; }
+    @keyframes fadeRise { from { opacity:0; transform: translateY(16px);} to {opacity:1; transform:none;} }
+    .fade-out { animation: fadeOut .35s ease both; }
+    @keyframes fadeOut { to { opacity:0; transform: translateY(-12px); } }
+
+    /* Summary line items slide+fade in */
+    .lineitem-in { animation: lineIn .18s ease both; }
+    @keyframes lineIn { from { opacity:0; transform: translateY(-4px);} to {opacity:1; transform:none;} }
+
+    /* Payment accordion */
+    .pm-panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .25s ease, opacity .25s ease; opacity:0; }
+    .pm-panel > div { overflow: hidden; }
+    .pm-card[data-open="true"] .pm-panel { grid-template-rows: 1fr; opacity:1; }
+
+    /* generic accordion (terms / faq) */
+    .acc-panel { display:grid; grid-template-rows:0fr; transition: grid-template-rows .25s ease; }
+    .acc-panel > div { overflow:hidden; }
+    .acc[data-open="true"] .acc-panel { grid-template-rows: 1fr; }
+    .acc[data-open="true"] .acc-chev { transform: rotate(180deg); }
+    .acc-chev { transition: transform .2s ease; }
+
+    /* Count-up tick on price change */
+    .price-tick { animation: tick .2s ease; }
+    @keyframes tick { 0%{ transform: translateY(2px); opacity:.4;} 100%{ transform:none; opacity:1;} }
+
+    /* Mobile drawer */
+    #mobileDrawer { transition: transform .32s cubic-bezier(.22,.61,.36,1); transform: translateY(100%); }
+    #mobileDrawer.open { transform: translateY(0); }
+    #drawerScrim { transition: opacity .25s ease; }
+
+    /* focus rings (AA) */
+    .focusable:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
+      outline: 2px solid #2563eb; outline-offset: 2px; border-radius: 0.5rem;
+    }
+    /* radio/checkbox card selected */
+    .selcard[data-selected="true"] {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 1px #2563eb, 0 0 0 4px rgba(37,99,235,0.12);
+      background: #f5f8ff;
+    }
+    .swatch[data-selected="true"] { box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #ffd349; }
+
+    /* hide number spinners */
+    input[type=number]::-webkit-outer-spin-button, input[type=number]::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
+    input[type=number]{ -webkit-appearance: textfield; -moz-appearance: textfield; appearance: textfield; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration:.001ms !important; transition-duration:.001ms !important; }
+    }
+    /* prevent body scroll under drawer */
+    body.drawer-open { overflow: hidden; }
+    body.auth-locked #hero,
+    body.auth-locked #app,
+    body.auth-locked #viewOrderBtn,
+    body.auth-locked #mobileDrawer,
+    body.auth-locked #drawerScrim,
+    body.auth-locked #chatPop {
+      display: none !important;
+    }
+    body.auth-locked {
+      overflow: auto;
+      background: #f8fbff;
+    }
+  </style>
+</head>
+
+<body class="auth-locked min-h-screen antialiased">
+
+  <!-- PROTOTYPE ribbon — bottom-center on mobile (clears the sticky-header logo,
+       step label, and phone link at 360-390px), top-right on sm+ where there is
+       whitespace. pointer-events-none so it never blocks taps. -->
+  <div class="fixed bottom-16 left-1/2 -translate-x-1/2 z-[60] m-2 select-none pointer-events-none sm:bottom-auto sm:left-auto sm:top-0 sm:right-0 sm:translate-x-0">
+    <div class="rounded-full bg-ink/85 backdrop-blur px-3 py-1.5 text-[11px] font-medium tracking-wide text-white/95 shadow-md">
+      <span class="sm:hidden">DEMO ONLY</span>
+      <span class="hidden sm:inline">DEMO ONLY — simulated checkout, no real payments</span>
+    </div>
+  </div>
+
+  <section id="reviewGate" class="min-h-[100svh] bg-[#f8fbff] px-4 py-8">
+    <div class="mx-auto flex min-h-[calc(100svh-4rem)] max-w-6xl items-center justify-center">
+      <div class="grid w-full overflow-hidden rounded-2xl border border-line bg-white shadow-sm md:grid-cols-[1fr_.9fr]">
+        <div class="relative hidden min-h-[560px] water-grad md:block">
+          <div class="absolute inset-0 bg-gradient-to-r from-brand-blueDeep/55 via-brand-blue/10 to-transparent"></div>
+          <img src="./assets/img/suburban.jpg" alt="The ReadyPool installed in a backyard"
+            class="h-full w-full object-cover mix-blend-normal" />
+          <div class="absolute inset-x-0 bottom-0 p-8 text-white">
+            <img src="./assets/img/logo.png" alt="Ready Pool" class="mb-5 h-10 w-auto rounded bg-white/95 px-3 py-2 shadow-sm" />
+            <h1 class="max-w-md text-4xl font-semibold tracking-tight2">Ready Pool checkout review</h1>
+            <p class="mt-3 max-w-md text-sm leading-6 text-white/90">
+              Partner-only prototype. Simulated payments, sample pricing, and draft terms for internal review.
+            </p>
+          </div>
+        </div>
+        <div class="flex min-h-[560px] items-center p-6 sm:p-10">
+          <div class="w-full">
+            <img src="./assets/img/logo.png" alt="Ready Pool" class="h-9 w-auto md:hidden" />
+            <p class="mt-8 text-xs font-semibold uppercase tracking-[.16em] text-brand-blue md:mt-0">Partner review</p>
+            <h2 class="mt-3 text-3xl font-semibold tracking-tight2 text-ink">Sign in to review the flow</h2>
+            <p class="mt-3 text-sm leading-6 text-muted">
+              Use your Iconic Brand Group email and the review password Eli shared. This unlocks the simulated checkout only.
+            </p>
+            <form id="reviewGateForm" class="mt-8 space-y-4" novalidate>
+              <div>
+                <label for="reviewEmail" class="block text-[13px] font-medium text-ink">Email</label>
+                <input id="reviewEmail" type="email" autocomplete="email" inputmode="email"
+                  placeholder="joshua@iconicbrandgroup.com"
+                  class="mt-1 w-full rounded-xl border border-line bg-white px-3 py-3 text-[15px] text-ink focusable" />
+              </div>
+              <div>
+                <label for="reviewPassword" class="block text-[13px] font-medium text-ink">Password</label>
+                <input id="reviewPassword" type="password" autocomplete="current-password"
+                  class="mt-1 w-full rounded-xl border border-line bg-white px-3 py-3 text-[15px] text-ink focusable" />
+              </div>
+              <p id="reviewGateError" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-[13px] text-red-700"></p>
+              <button type="submit"
+                class="inline-flex h-[52px] w-full items-center justify-center rounded-xl bg-brand-blue px-5 text-base font-semibold text-white shadow-sm transition hover:bg-brand-blueDark active:scale-[.99]">
+                Open review prototype
+              </button>
+            </form>
+            <div class="mt-6 rounded-xl border border-amber-300 bg-amber-50 p-4 text-[12px] leading-5 text-amber-900">
+              Demo only: no payment, no order submission, no CRM write, and no production Ready Pool data.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ HERO ============================================================ -->
+  <section id="hero" class="relative min-h-[100svh] water-grad overflow-hidden">
+    <!-- white scrim left->transparent so headline stays AA-legible -->
+    <div class="pointer-events-none absolute inset-0 bg-gradient-to-r from-brand-blueDeep/45 via-brand-blue/10 to-transparent"></div>
+
+    <!-- top bar -->
+    <div class="relative z-10 mx-auto flex max-w-6xl items-center justify-between px-5 pt-5 sm:px-8">
+      <img src="./assets/img/logo.png" alt="Ready Pool"
+           class="h-9 w-auto rounded bg-white/95 px-2.5 py-1.5 shadow-sm sm:h-10" />
+      <a href="tel:+18133307599" class="inline-flex items-center gap-1.5 rounded-full bg-ink/40 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur-sm transition hover:bg-ink/55 sm:text-sm">
+        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true" focusable="false"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        (813) 330-7599
+      </a>
+    </div>
+
+    <div class="relative z-10 mx-auto grid max-w-6xl grid-cols-1 items-center gap-8 px-5 pb-32 pt-10 sm:px-8 md:grid-cols-2 md:pb-16 md:pt-16">
+      <!-- copy -->
+      <div class="order-2 md:order-1 fade-rise">
+        <h1 class="max-w-xl text-4xl font-semibold tracking-tight2 text-white sm:text-5xl lg:text-6xl">
+          The Only Pool<br class="hidden sm:block" /> That's Ready Today.
+        </h1>
+        <p class="mt-4 max-w-md text-base text-white/95 sm:text-lg">
+          Order yours in a few quiet minutes.
+        </p>
+        <p class="mt-3 inline-flex max-w-md rounded-full bg-white/90 px-3 py-1.5 text-[12px] font-semibold text-ink shadow-sm">
+          Sample pricing and draft terms for review — final Ready Pool values pending Robert.
+        </p>
+        <button id="openWizardBtn"
+          class="mt-7 inline-flex h-[52px] min-w-[200px] items-center justify-center gap-2 rounded-full bg-white px-7 text-base font-semibold text-brand-blue shadow-md transition hover:bg-white/90 active:scale-[.98]">
+          Order Now
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+
+        <!-- frosted value-prop strip -->
+        <div class="mt-9 max-w-xl rounded-2xl border border-white/20 bg-white/10 p-3 backdrop-blur-sm">
+          <ul class="grid grid-cols-2 gap-x-4 gap-y-3 text-[13px] text-white/95 sm:flex sm:items-center sm:justify-between sm:gap-0">
+            <li class="flex items-center gap-2"><svg class="h-4 w-4 shrink-0 text-brand-cyanLight" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true" focusable="false"><path d="M12 6v6l4 2"/><circle cx="12" cy="12" r="9"/></svg>Self-serve in minutes</li>
+            <li class="flex items-center gap-2"><svg class="h-4 w-4 shrink-0 text-brand-cyanLight" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true" focusable="false"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Sample $5,000 deposit</li>
+            <li class="flex items-center gap-2"><svg class="h-4 w-4 shrink-0 text-brand-cyanLight" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true" focusable="false"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>Card &amp; ACH instant</li>
+            <li class="flex items-center gap-2"><svg class="h-4 w-4 shrink-0 text-brand-cyanLight" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg>Zero staff touch points</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- pool render (the one saturated object) -->
+      <!-- Watermark-free brand photo. The Render Gallery webps carry a third-party
+           "Pool Studio" software watermark, so use a clean verified brand asset here
+           and on every configurator/summary thumbnail. -->
+      <div class="order-1 flex justify-center md:order-2 md:justify-end fade-rise">
+        <img src="./assets/img/suburban.jpg"
+             alt="The ReadyPool container pool installed in a suburban backyard, 20 by 8 by 4 feet"
+             fetchpriority="high" width="1024" height="768"
+             class="w-full max-w-md rounded-2xl shadow-md md:max-w-lg" style="aspect-ratio:4/3;object-fit:cover" />
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ WIZARD APP ============================================================ -->
+  <main id="app" class="hidden">
+    <!-- sticky compact header: logo + phone + progress -->
+    <header class="sticky top-0 z-40 border-b border-line bg-white/95 backdrop-blur">
+      <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
+        <img src="./assets/img/logo.png" alt="Ready Pool" class="h-7 w-auto sm:h-8" />
+        <div class="flex items-center gap-4">
+          <span id="stepLabel" class="text-xs font-medium text-muted tabular-nums">Step 1 of 7</span>
+          <a href="tel:+18133307599" class="inline-flex items-center gap-1.5 text-xs font-medium text-brand-blue hover:text-brand-blueDark sm:text-sm">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true" focusable="false"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            <span class="hidden sm:inline">(813) 330-7599</span>
+          </a>
+        </div>
+      </div>
+      <!-- segmented progress -->
+      <div class="mx-auto max-w-6xl px-4 pb-2 sm:px-6">
+        <div id="progressSeg" class="flex gap-1" aria-hidden="true"></div>
+        <p id="progressReassure" class="mt-1.5 text-[11px] text-muted">Go back anytime — this prototype never charges or submits.</p>
+      </div>
+    </header>
+
+    <div class="mx-auto grid max-w-6xl grid-cols-1 gap-8 px-4 pb-40 pt-6 sm:px-6 md:grid-cols-[1fr_340px] md:pb-16 md:pt-8">
+      <!-- ============ DECISION COLUMN ============ -->
+      <div class="mx-auto w-full max-w-decision md:mx-0">
+        <div id="stepRoot"><!-- steps injected --></div>
+      </div>
+
+      <!-- ============ DESKTOP STICKY SUMMARY RAIL ============ -->
+      <aside class="hidden md:block">
+        <div class="sticky top-28">
+          <div id="railCard" class="overflow-hidden rounded-2xl border border-line bg-white shadow-sm">
+            <div class="rail-hairline h-1 w-full"></div>
+            <div class="p-5" id="railBody"><!-- summary injected --></div>
+          </div>
+          <!-- footer safety net -->
+          <div class="mt-3 flex items-center justify-between px-1 text-[11px] text-muted">
+            <a href="tel:+18133307599" class="hover:text-ink">Call (813) 330-7599</a>
+            <button class="chatBtn hover:text-ink">Questions? Chat</button>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <!-- ============ MOBILE BOTTOM BAR ============ -->
+    <div id="mobileBar" class="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-white/95 px-4 py-3 shadow-md backdrop-blur md:hidden">
+      <div class="mx-auto flex max-w-md items-center justify-between">
+        <div class="leading-tight">
+          <div class="text-[11px] text-muted">Sample deposit</div>
+          <div class="text-lg font-semibold tabular-nums text-ink"><span class="text-brand-sun" style="text-shadow:0 1px 0 rgba(0,0,0,.18)">$5,000</span></div>
+          <div class="text-[11px] text-muted tabular-nums">Order <span id="mobileBarSubtotal" data-anim="mobileSub" class="font-medium text-ink">$5,000</span></div>
+        </div>
+        <button id="viewOrderBtn" class="inline-flex items-center gap-1.5 rounded-xl border border-line bg-recessed px-4 py-2.5 text-sm font-medium text-ink active:scale-[.98]">
+          View order
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- ============ MOBILE DRAWER (summary) ============ -->
+  <div id="drawerScrim" class="fixed inset-0 z-40 hidden bg-ink/40 md:hidden"></div>
+  <div id="mobileDrawer" class="fixed inset-x-0 bottom-0 z-50 max-h-[85svh] overflow-y-auto rounded-t-2xl border-t border-line bg-white shadow-md md:hidden" role="dialog" aria-modal="true" aria-label="Order summary">
+    <div class="sticky top-0 flex items-center justify-between border-b border-line bg-white px-5 pb-3 pt-4">
+      <div class="mx-auto h-1.5 w-10 rounded-full bg-line absolute left-1/2 top-2 -translate-x-1/2"></div>
+      <h2 class="text-base font-semibold text-ink">Order summary</h2>
+      <button id="closeDrawerBtn" class="rounded-lg p-1.5 text-muted hover:bg-recessed" aria-label="Close">
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div id="drawerBody" class="p-5"><!-- summary mirror --></div>
+  </div>
+
+  <!-- ============ CHAT (safety net, non-blocking) ============ -->
+  <div id="chatPop" class="fixed bottom-24 right-4 z-[55] hidden w-72 rounded-2xl border border-line bg-white p-4 shadow-md md:bottom-6">
+    <div class="flex items-start justify-between">
+      <div class="flex items-center gap-2">
+        <span class="flex h-8 w-8 items-center justify-center rounded-full water-grad text-white text-xs font-semibold">RP</span>
+        <div class="leading-tight">
+          <p class="text-sm font-semibold text-ink">Ready Pool</p>
+          <p class="text-[11px] text-emerald-600">● Typically replies fast</p>
+        </div>
+      </div>
+      <button class="chatBtn rounded p-1 text-muted hover:bg-recessed" aria-label="Close chat"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+    </div>
+    <p class="mt-3 rounded-xl bg-recessed p-3 text-[13px] text-ink">Hi! Self-serve checkout is open 24/7 — but if you'd like a human, call <a href="tel:+18133307599" class="font-medium text-brand-blue">(813) 330-7599</a>. (Chat is a demo.)</p>
+  </div>
+
+  <script>
+  /* ============================================================
+     READY POOL CHECKOUT — STATE MACHINE & PRICING
+     ============================================================ */
+
+  // ---- CONFIGURABLE PLACEHOLDERS (clearly labeled in UI) ----
+  const BASE_PRICE = 31900;          // PLACEHOLDER — confirm with Robert
+  const DEPOSIT = 5000;              // fixed deposit due today
+  const CUSTOM_COLOR_FEE = 399;
+  const SHIP_RATE_PER_MILE = 2.10;   // PLACEHOLDER configurable rate
+  const TAMPA_ORIGIN_ZIP = '33602';
+  const CARD_FEE_APPROX = 150;       // ~3% of deposit, shown as advisory
+
+  // Upgrade thumbnails use watermark-free brand photos. The Render Gallery webps
+  // carry a third-party "Pool Studio" watermark; swap to clean verified assets.
+  const UPGRADES = [
+    { id:'heater',    name:'Advanced Heater',          price:1498, benefit:'Swim comfortably year-round in any season.', img:'./assets/img/river.jpg' },
+    { id:'salt',      name:'Salt System',              price:2200, benefit:'Softer water, lower upkeep, no harsh chlorine.', img:'./assets/img/underwater.webp' },
+    { id:'slipstream',name:'Slipstream Swim System',   price:7200, benefit:'Endless current — swim laps in place.', img:'./assets/img/tiny.jpg' },
+    { id:'lounge',    name:'2 Lounge Chairs',          price:499,  benefit:'Two weather-ready loungers, delivered with your pool.', img:'./assets/img/container.jpg' },
+  ];
+
+  const INSTALL_TYPES = [
+    { id:'in-ground',  name:'In-ground',        note:'Set level with the deck or patio.' },
+    { id:'above',      name:'Above-ground',     note:'Freestanding on a prepared pad.' },
+    { id:'partial',    name:'Partially buried', note:'Half-sunk for a built-in look.' },
+    { id:'elevated',   name:'Elevated',         note:'Raised on a structure or slope.' },
+  ];
+
+  const STD_COLORS = [
+    { id:'ocean',    name:'Ocean Blue',  hex:'#2563eb' },
+    { id:'graphite', name:'Graphite',    hex:'#374151' },
+    { id:'pearl',    name:'Pearl White', hex:'#f3f4f6' },
+    { id:'desert',   name:'Desert Tan',  hex:'#d9c4a3' },
+  ];
+
+  const PAYMENT_METHODS = [
+    { id:'ach',       name:'ACH bank transfer', sub:'Direct from your bank — no card fees.', manual:false, recommended:true,
+      icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" focusable="false"><path d="M3 21h18M5 21V10m4 11V10m6 11V10m4 11V10M12 3 3 8h18l-9-5z"/></svg>' },
+    { id:'card',      name:'Credit / Debit card', sub:'Charged today — instant build confirmation.', manual:false,
+      icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" focusable="false"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>' },
+    { id:'zelle',     name:'Zelle', sub:'Manual send — daily limits may apply.', manual:true,
+      icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" focusable="false"><path d="M12 2v3m0 14v3M5 7l2 2m10 8 2 2M2 12h3m14 0h3M7 17l-2 2M19 5l-2 2"/></svg>' },
+    { id:'wire',      name:'Bank wire', sub:'Manual transfer with routing details.', manual:true,
+      icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18 14 14 0 0 1 0-18z"/></svg>' },
+    { id:'check',     name:'Mailed check', sub:'Mail a check with the memo reference.', manual:true,
+      icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" focusable="false"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h6M6 14h3"/></svg>' },
+    { id:'financing', name:'Financing', sub:'Apply with our finance partner.', manual:true, external:true,
+      icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" focusable="false"><path d="M3 6h18v12H3z"/><circle cx="12" cy="12" r="2.5"/></svg>' },
+  ];
+
+  // ---- STATE ----
+  const state = {
+    step: 1,
+    maxStep: 7,
+    config: { baseModel: 'The ReadyPool 20x8x4', installType: null, color: 'ocean', customHex: '' },
+    upgrades: {}, // id -> true
+    delivery: { zip:'', address:'', name:'', phone:'', email:'', siteNotes:'', fulfillment:'delivery' },
+    shipping: { estimateAmount: 0, distanceMiles: 0 },
+    payment: { method: null },
+    consent: { termsAccepted:false },
+    order: null,
+    dir: 'fwd',
+  };
+
+  // ---- MONEY HELPERS ----
+  const fmt = n => '$' + Math.round(n).toLocaleString('en-US');
+  const HEX_RE = /^#[0-9a-fA-F]{6}$/;
+  // A custom color only becomes billable once a valid hex is entered, so the
+  // +$399 line and the subtotal stay in sync while the user is mid-typing an
+  // invalid value. (Step 1 already blocks advancing until the hex is valid.)
+  const customColorBillable = () => state.config.color === 'custom' && HEX_RE.test(state.config.customHex);
+  function subtotal(){
+    let s = BASE_PRICE;
+    if (customColorBillable()) s += CUSTOM_COLOR_FEE;
+    UPGRADES.forEach(u => { if (state.upgrades[u.id]) s += u.price; });
+    return s;
+  }
+  function balance(){ return Math.max(0, subtotal() - DEPOSIT); }
+
+  // ---- SHIPPING SIM (would be a server-side driving-distance call to protect the API key) ----
+  function estimateShipping(zip){
+    if (!/^\d{5}$/.test(zip)) return { miles:0, amount:0 };
+    // Deterministic plausible "distance" from Tampa origin 33602, derived from the ZIP.
+    // Monotonic mapping (no modulo wraparound): the larger the ZIP delta, the
+    // larger the distance, scaled into a believable 50-1400 mile range. This keeps
+    // a genuinely far ZIP from collapsing to an implausibly small mileage.
+    const z = parseInt(zip,10);
+    const origin = parseInt(TAMPA_ORIGIN_ZIP,10);
+    const raw = Math.abs(z - origin);
+    // US ZIP codes span ~00501-99950, so the max delta from Tampa is ~66400.
+    const MAX_DELTA = 66400;
+    const frac = Math.min(1, raw / MAX_DELTA);
+    let miles = Math.round(50 + frac * 1350);
+    const amount = Math.round(miles * SHIP_RATE_PER_MILE);
+    return { miles, amount };
+  }
+
+  /* ============================================================
+     RENDERING
+     ============================================================ */
+  const stepRoot = () => document.getElementById('stepRoot');
+
+  function setProgress(){
+    const seg = document.getElementById('progressSeg');
+    seg.innerHTML = '';
+    for (let i=1;i<=7;i++){
+      const d = document.createElement('div');
+      d.className = 'h-1.5 flex-1 rounded-full transition-colors ' + (i <= state.step ? 'bg-brand-blue' : 'bg-line');
+      seg.appendChild(d);
+    }
+    document.getElementById('stepLabel').textContent = `Step ${state.step} of 7`;
+  }
+
+  // shared bits
+  const sunPip = `<span class="inline-block h-1.5 w-1.5 rounded-full bg-brand-sun align-middle"></span>`;
+  const noChargeLine = `<p class="mt-4 flex items-center justify-center gap-2 text-[12px] text-muted">${sunPip}<span>Demo only — no charge or order submission.</span></p>`;
+  function stepHeader(n, q, sub){
+    return `
+      <div class="mb-6">
+        <p class="text-xs font-medium uppercase tracking-wide text-brand-blue">Step ${n} of 7</p>
+        <h2 id="stepHeading" tabindex="-1" class="mt-1 text-2xl font-semibold tracking-tight2 text-ink outline-none">${q}</h2>
+        ${sub ? `<p class="mt-2 text-[15px] text-muted">${sub}</p>` : ''}
+      </div>`;
+  }
+  function continueBar(label, disabled, attrs=''){
+    return `
+      <div class="mt-8">
+        <button data-continue class="w-full inline-flex h-[52px] items-center justify-center gap-2 rounded-xl bg-brand-blue px-6 text-base font-semibold text-white shadow-sm transition hover:bg-brand-blueDark active:scale-[.99] disabled:opacity-40 disabled:cursor-not-allowed" ${disabled?'disabled':''} ${attrs}>
+          ${label}
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+        ${noChargeLine}
+      </div>`;
+  }
+  function backBtn(){
+    return state.step > 1
+      ? `<button data-back class="mb-4 inline-flex items-center gap-1.5 text-sm font-medium text-muted hover:text-ink"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="m15 18-6-6 6-6"/></svg>Back</button>`
+      : '';
+  }
+
+  /* -------- STEP 1: CONFIGURE -------- */
+  function renderStep1(){
+    const colors = STD_COLORS.map(c => `
+      <button type="button" data-color="${c.id}" data-selected="${state.config.color===c.id}"
+        class="swatch group flex flex-col items-center gap-2 rounded-xl border border-line bg-white p-3 transition hover:shadow-sm focusable" aria-pressed="${state.config.color===c.id}">
+        <span class="h-9 w-9 rounded-full border border-line" style="background:${c.hex}"></span>
+        <span class="text-[12px] font-medium text-ink">${c.name}</span>
+      </button>`).join('');
+
+    const installs = INSTALL_TYPES.map(t => `
+      <button type="button" data-install="${t.id}" data-selected="${state.config.installType===t.id}"
+        class="selcard flex w-full items-start gap-3 rounded-xl border border-line bg-white p-4 text-left transition hover:shadow-sm focusable" aria-pressed="${state.config.installType===t.id}">
+        <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 ${state.config.installType===t.id?'border-brand-blue':'border-line'}">
+          <span class="h-2.5 w-2.5 rounded-full ${state.config.installType===t.id?'bg-brand-blue':'bg-transparent'}"></span>
+        </span>
+        <span>
+          <span class="block text-[15px] font-medium text-ink">${t.name}</span>
+          <span class="block text-[13px] text-muted">${t.note}</span>
+        </span>
+      </button>`).join('');
+
+    const isCustom = state.config.color === 'custom';
+    const hexValid = /^#[0-9a-fA-F]{6}$/.test(state.config.customHex);
+
+    stepRoot().innerHTML = `
+      ${backBtn()}
+      ${stepHeader(1, 'Configure your ReadyPool', 'One design, ready today. Start with the base, then make it yours.')}
+
+      <!-- price anchor -->
+      <div class="rounded-2xl border border-line bg-recessed p-5">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <p class="text-[13px] font-medium text-muted">The ReadyPool · 20×8×4</p>
+            <p class="mt-1 text-3xl font-semibold tabular-nums tracking-tight2 text-ink">${fmt(BASE_PRICE)}</p>
+            <p class="mt-1 text-[12px] text-muted">Base price · <span class="rounded bg-brand-sun/30 px-1.5 py-0.5 text-[11px] font-semibold text-ink">sample only — confirm with Robert</span></p>
+          </div>
+          <img src="./assets/img/suburban.jpg" alt="The ReadyPool" loading="lazy" class="h-20 w-28 rounded-xl object-cover" onerror="this.style.display='none'" />
+        </div>
+        <p class="mt-3 flex items-center gap-2 border-t border-line pt-3 text-[13px] text-muted">
+          <svg class="h-4 w-4 text-brand-cyanDark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true" focusable="false"><path d="M12 2 4 5v6c0 5 3.5 8 8 11 4.5-3 8-6 8-11V5l-8-3z"/><path d="m9 12 2 2 4-4"/></svg>
+          Lifetime shell · 3-year components warranty
+        </p>
+      </div>
+
+      <!-- install type -->
+      <fieldset class="mt-7">
+        <legend class="text-[15px] font-semibold text-ink">Installation type</legend>
+        <p class="mb-3 text-[13px] text-muted">No price change — this guides your site prep.</p>
+        <div class="grid grid-cols-1 gap-2.5 sm:grid-cols-2">${installs}</div>
+      </fieldset>
+
+      <!-- color -->
+      <fieldset class="mt-7">
+        <legend class="text-[15px] font-semibold text-ink">Exterior color</legend>
+        <p class="mb-3 text-[13px] text-muted">Four standard finishes at no charge (sample swatches).</p>
+        <div class="grid grid-cols-4 gap-2.5">${colors}</div>
+
+        <button type="button" data-color="custom" data-selected="${isCustom}"
+          class="selcard mt-3 flex w-full items-center justify-between rounded-xl border border-line bg-white p-4 text-left transition hover:shadow-sm focusable" aria-pressed="${isCustom}">
+          <span class="flex items-center gap-3">
+            <span class="flex h-5 w-5 items-center justify-center rounded-full border-2 ${isCustom?'border-brand-blue':'border-line'}"><span class="h-2.5 w-2.5 rounded-full ${isCustom?'bg-brand-blue':'bg-transparent'}"></span></span>
+            <span class="text-[15px] font-medium text-ink">Custom color</span>
+          </span>
+          <span class="text-[14px] font-semibold tabular-nums text-ink">+${fmt(CUSTOM_COLOR_FEE)}</span>
+        </button>
+
+        <div class="acc-panel ${isCustom?'':'hidden'}" id="hexWrap" data-open="${isCustom}">
+          <div>
+            <div class="mt-3 rounded-xl border border-line bg-recessed p-4">
+              <label for="hexInput" class="block text-[13px] font-medium text-ink">Hex color (#RRGGBB)</label>
+              <div class="mt-2 flex items-center gap-3">
+                <input id="hexInput" type="text" inputmode="text" autocomplete="off" maxlength="7" placeholder="#1e90ff"
+                  value="${state.config.customHex}"
+                  class="w-40 rounded-xl border border-line bg-white px-3 py-2.5 text-[15px] tabular-nums text-ink focusable" />
+                <span id="hexChip" class="h-10 w-10 rounded-xl border border-line" style="background:${hexValid?state.config.customHex:'#ffffff'}"></span>
+                <span id="hexMsg" class="text-[12px] ${hexValid?'text-emerald-600':'text-muted'}">${state.config.customHex ? (hexValid?'Looks good':'Use format #RRGGBB') : 'Live preview'}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- light entry gate: email + zip (powers shipping estimate + abandoned-cart recovery) -->
+      <fieldset class="mt-7 rounded-2xl border border-line bg-white p-5">
+        <legend class="px-1 text-[15px] font-semibold text-ink">Where should we send your build details?</legend>
+        <p class="mb-4 text-[13px] text-muted">We use this to estimate delivery and email your order. <!-- powers abandoned-cart recovery in the real build --></p>
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div>
+            <label for="emailGate" class="block text-[13px] font-medium text-ink">Email</label>
+            <input id="emailGate" type="email" inputmode="email" autocomplete="email" placeholder="you@email.com" value="${state.delivery.email}"
+              class="mt-1.5 w-full rounded-xl border border-line bg-white px-3 py-2.5 text-[15px] text-ink focusable" />
+            <p class="mt-1 text-[11px] text-muted">We email your order details and never share your address.</p>
+            <!-- Production build: this gate fires a cart-capture / identify event and
+                 persists email + ZIP to localStorage so an abandoned order can resume
+                 after a refresh. This prototype keeps state in-memory only. -->
+          </div>
+          <div>
+            <label for="zipGate" class="block text-[13px] font-medium text-ink">Delivery ZIP</label>
+            <input id="zipGate" type="text" inputmode="numeric" autocomplete="postal-code" maxlength="5" placeholder="33602" value="${state.delivery.zip}"
+              class="mt-1.5 w-full rounded-xl border border-line bg-white px-3 py-2.5 text-[15px] tabular-nums text-ink focusable" />
+          </div>
+        </div>
+        <p id="gateMsg" class="mt-2 hidden text-[12px] text-rose-600"></p>
+      </fieldset>
+
+      ${continueBar('Continue to upgrades', false)}
+    `;
+
+    // wire color
+    stepRoot().querySelectorAll('[data-color]').forEach(b => b.addEventListener('click', () => {
+      const id = b.getAttribute('data-color');
+      state.config.color = id;
+      if (state.config.color !== 'custom') state.config.customHex = '';
+      repaint(`[data-color="${id}"]`);
+    }));
+    // wire install
+    stepRoot().querySelectorAll('[data-install]').forEach(b => b.addEventListener('click', () => {
+      const id = b.getAttribute('data-install');
+      state.config.installType = id;
+      repaint(`[data-install="${id}"]`);
+    }));
+    // hex
+    const hexInput = document.getElementById('hexInput');
+    if (hexInput){
+      hexInput.addEventListener('input', e => {
+        let v = e.target.value.trim();
+        if (v && !v.startsWith('#')) v = '#' + v;
+        state.config.customHex = v;
+        const ok = /^#[0-9a-fA-F]{6}$/.test(v);
+        document.getElementById('hexChip').style.background = ok ? v : '#ffffff';
+        const msg = document.getElementById('hexMsg');
+        msg.textContent = v ? (ok?'Looks good':'Use format #RRGGBB') : 'Live preview';
+        msg.className = 'text-[12px] ' + (ok?'text-emerald-600':'text-muted');
+        renderSummary();
+      });
+    }
+    // gate inputs
+    document.getElementById('emailGate').addEventListener('input', e => { state.delivery.email = e.target.value.trim(); });
+    document.getElementById('zipGate').addEventListener('input', e => {
+      state.delivery.zip = e.target.value.replace(/\D/g,'').slice(0,5);
+      e.target.value = state.delivery.zip;
+    });
+  }
+
+  function validateStep1(){
+    const email = state.delivery.email, zip = state.delivery.zip;
+    const msg = document.getElementById('gateMsg');
+    const emailOk = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email);
+    const zipOk = /^\d{5}$/.test(zip);
+    const customOk = state.config.color !== 'custom' || /^#[0-9a-fA-F]{6}$/.test(state.config.customHex);
+    let err = '';
+    if (!state.config.installType) err = 'Please choose an installation type.';
+    else if (!customOk) err = 'Enter a valid hex color (#RRGGBB) or pick a standard color.';
+    else if (!emailOk) err = 'Enter a valid email so we can send your order.';
+    else if (!zipOk) err = 'Enter a 5-digit delivery ZIP for your shipping estimate.';
+    if (err){ msg.textContent = err; msg.classList.remove('hidden'); return false; }
+    msg.classList.add('hidden');
+    return true;
+  }
+
+  /* -------- STEP 2: UPGRADES -------- */
+  function renderStep2(){
+    const cards = UPGRADES.map(u => {
+      const on = !!state.upgrades[u.id];
+      return `
+      <button type="button" data-upg="${u.id}" data-selected="${on}"
+        class="selcard group flex w-full items-center gap-4 overflow-hidden rounded-xl border border-line bg-white p-3 text-left transition hover:shadow-sm focusable" aria-pressed="${on}">
+        <img src="${u.img}" alt="${u.name}" loading="lazy" class="h-16 w-20 shrink-0 rounded-lg object-cover" onerror="this.style.display='none'" />
+        <span class="min-w-0 flex-1">
+          <span class="flex items-center justify-between gap-2">
+            <span class="text-[15px] font-medium text-ink">${u.name}</span>
+            <span class="text-[14px] font-semibold tabular-nums text-ink">+${fmt(u.price)}</span>
+          </span>
+          <span class="mt-0.5 block text-[13px] text-muted">${u.benefit}</span>
+        </span>
+        <span class="ml-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-md border-2 ${on?'border-brand-blue bg-brand-blue':'border-line bg-white'}">
+          ${on?'<svg class="h-4 w-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true" focusable="false"><path d="m5 12 5 5 9-9"/></svg>':''}
+        </span>
+      </button>`;
+    }).join('');
+
+    stepRoot().innerHTML = `
+      ${backBtn()}
+      ${stepHeader(2, 'Add upgrades', 'Optional. Toggle any to watch your order update in real time.')}
+      <div class="grid grid-cols-1 gap-3">${cards}</div>
+      ${continueBar('Continue to delivery', false)}
+    `;
+    stepRoot().querySelectorAll('[data-upg]').forEach(b => b.addEventListener('click', () => {
+      const id = b.getAttribute('data-upg');
+      state.upgrades[id] = !state.upgrades[id];
+      repaint(`[data-upg="${id}"]`);
+    }));
+  }
+
+  /* -------- STEP 3: DELIVERY & SHIPPING ESTIMATE -------- */
+  function renderStep3(){
+    const ship = estimateShipping(state.delivery.zip);
+    state.shipping = { estimateAmount: ship.amount, distanceMiles: ship.miles };
+
+    const opt = (id,title,sub,price) => {
+      const on = state.delivery.fulfillment===id;
+      return `
+      <button type="button" data-fulfill="${id}" data-selected="${on}"
+        class="selcard flex w-full items-center justify-between gap-3 rounded-xl border border-line bg-white p-4 text-left transition hover:shadow-sm focusable" aria-pressed="${on}">
+        <span class="flex items-start gap-3">
+          <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 ${on?'border-brand-blue':'border-line'}"><span class="h-2.5 w-2.5 rounded-full ${on?'bg-brand-blue':'bg-transparent'}"></span></span>
+          <span><span class="block text-[15px] font-medium text-ink">${title}</span><span class="block text-[13px] text-muted">${sub}</span></span>
+        </span>
+        <span class="text-[14px] font-semibold tabular-nums ${price===0?'text-emerald-600':'text-ink'}">${price===0?'$0':fmt(price)}</span>
+      </button>`;
+    };
+
+    stepRoot().innerHTML = `
+      ${backBtn()}
+      ${stepHeader(3, 'Delivery &amp; shipping', 'How would you like to receive your pool?')}
+
+      <!-- ZIP confirm -->
+      <div class="rounded-2xl border border-line bg-white p-5">
+        <label for="zip3" class="block text-[13px] font-medium text-ink">Destination ZIP</label>
+        <div class="mt-1.5 flex items-center gap-3">
+          <input id="zip3" type="text" inputmode="numeric" maxlength="5" autocomplete="postal-code" value="${state.delivery.zip}"
+            class="w-40 rounded-xl border border-line bg-white px-3 py-2.5 text-[15px] tabular-nums text-ink focusable" />
+          <button id="recalcBtn" type="button" class="rounded-xl border border-line bg-recessed px-4 py-2.5 text-sm font-medium text-ink hover:shadow-sm focusable">Estimate</button>
+        </div>
+
+        <!-- shipping estimate (non-binding, NOT in total) -->
+        <div class="mt-4 rounded-xl bg-recessed p-4" id="shipEstimate">
+          <div class="flex items-center justify-between gap-3">
+            <div>
+              <p class="flex items-center gap-2 text-[13px] font-medium text-ink">
+                Delivery from Tampa, FL
+                <span class="rounded-full border border-line bg-white px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-muted">non-binding estimate</span>
+              </p>
+              <p class="mt-0.5 text-[12px] text-muted tabular-nums" id="shipMeta">~${ship.miles.toLocaleString()} mi · $${SHIP_RATE_PER_MILE.toFixed(2)}/mi <span class="rounded bg-brand-sun/30 px-1 text-[10px] text-ink">rate placeholder</span></p>
+            </div>
+            <p class="text-2xl font-semibold tabular-nums text-ink" id="shipAmt">${fmt(ship.amount)}</p>
+          </div>
+          <p class="mt-3 border-t border-line pt-3 text-[12px] text-muted">Freight is billed/arranged separately and is <strong class="font-medium text-ink">not included</strong> in your order total. Final freight is quoted before shipping.
+          <!-- real build: this distance call runs server-side to protect the mapping API key --></p>
+        </div>
+      </div>
+
+      <!-- fulfillment options -->
+      <fieldset class="mt-6">
+        <legend class="mb-3 text-[15px] font-semibold text-ink">Or choose a no-cost option</legend>
+        <div class="grid grid-cols-1 gap-2.5">
+          ${opt('delivery','Ship to my address', `Estimated above · ~${ship.miles.toLocaleString()} mi from Tampa`, ship.amount)}
+          ${opt('pickup','Pick up in Tampa','Collect from our Tampa, FL yard.',0)}
+          ${opt('self',"I'll arrange my own freight",'We load; you handle transport.',0)}
+        </div>
+      </fieldset>
+
+      ${continueBar('Continue to your details', false)}
+    `;
+
+    document.getElementById('zip3').addEventListener('input', e => {
+      state.delivery.zip = e.target.value.replace(/\D/g,'').slice(0,5); e.target.value = state.delivery.zip;
+    });
+    document.getElementById('recalcBtn').addEventListener('click', () => { repaint('#recalcBtn'); });
+    stepRoot().querySelectorAll('[data-fulfill]').forEach(b => b.addEventListener('click', () => {
+      const id = b.getAttribute('data-fulfill');
+      state.delivery.fulfillment = id;
+      repaint(`[data-fulfill="${id}"]`);
+    }));
+  }
+
+  /* -------- STEP 4: CONTACT & DELIVERY DETAILS -------- */
+  function renderStep4(){
+    const d = state.delivery;
+    stepRoot().innerHTML = `
+      ${backBtn()}
+      ${stepHeader(4, 'Your details', 'Where we ship and how we reach you.')}
+      <div class="space-y-5 rounded-2xl border border-line bg-white p-5">
+        <div>
+          <label for="f-name" class="block text-[13px] font-medium text-ink">Full name</label>
+          <input id="f-name" type="text" autocomplete="name" value="${d.name}" placeholder="Jane Rivera"
+            class="mt-1.5 w-full rounded-xl border border-line bg-white px-3 py-2.5 text-[15px] text-ink focusable" />
+        </div>
+        <div>
+          <label for="f-addr" class="block text-[13px] font-medium text-ink">Delivery address</label>
+          <input id="f-addr" type="text" autocomplete="street-address" value="${d.address}" placeholder="123 Lakeshore Dr, Tampa, FL 33602"
+            class="mt-1.5 w-full rounded-xl border border-line bg-white px-3 py-2.5 text-[15px] text-ink focusable" />
+        </div>
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div>
+            <label for="f-phone" class="block text-[13px] font-medium text-ink">Phone</label>
+            <input id="f-phone" type="tel" inputmode="tel" autocomplete="tel" value="${d.phone}" placeholder="(813) 555-0142"
+              class="mt-1.5 w-full rounded-xl border border-line bg-white px-3 py-2.5 text-[15px] tabular-nums text-ink focusable" />
+          </div>
+          <div>
+            <label for="f-email" class="block text-[13px] font-medium text-ink">Email</label>
+            <input id="f-email" type="email" inputmode="email" autocomplete="email" value="${d.email}" placeholder="you@email.com"
+              class="mt-1.5 w-full rounded-xl border border-line bg-white px-3 py-2.5 text-[15px] text-ink focusable" />
+            <p class="mt-1 text-[11px] text-muted">Pre-filled from earlier.</p>
+          </div>
+        </div>
+        <div>
+          <label for="f-notes" class="block text-[13px] font-medium text-ink">Delivery notes / site access <span class="font-normal text-muted">(optional)</span></label>
+          <textarea id="f-notes" rows="3" placeholder="Gate code, crane access, narrow driveway, best drop point…"
+            class="mt-1.5 w-full rounded-xl border border-line bg-white px-3 py-2.5 text-[15px] text-ink focusable">${d.siteNotes}</textarea>
+        </div>
+      </div>
+      <p id="step4Msg" class="mt-3 hidden text-[12px] text-rose-600"></p>
+      ${continueBar('Continue to review', false)}
+    `;
+    const bind = (id, key, transform) => document.getElementById(id).addEventListener('input', e => {
+      state.delivery[key] = transform ? transform(e.target.value) : e.target.value;
+    });
+    bind('f-name','name'); bind('f-addr','address'); bind('f-phone','phone'); bind('f-email','email', v=>v.trim()); bind('f-notes','siteNotes');
+  }
+  function validateStep4(){
+    const d = state.delivery; const msg = document.getElementById('step4Msg');
+    let err='';
+    if (!d.name.trim()) err='Please enter your full name.';
+    else if (!d.address.trim()) err='Please enter a delivery address.';
+    else if (!/\d/.test(d.phone)) err='Please enter a phone number.';
+    else if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(d.email)) err='Please enter a valid email.';
+    if (err){ msg.textContent=err; msg.classList.remove('hidden'); return false; }
+    msg.classList.add('hidden'); return true;
+  }
+
+  /* -------- STEP 5: REVIEW -------- */
+  function renderStep5(){
+    const items = [];
+    items.push(['The ReadyPool 20×8×4', BASE_PRICE]);
+    if (customColorBillable()) items.push([`Custom color ${state.config.customHex}`, CUSTOM_COLOR_FEE]);
+    UPGRADES.forEach(u => { if (state.upgrades[u.id]) items.push([u.name, u.price]); });
+
+    const rows = items.map(([n,p]) => `
+      <div class="flex items-center justify-between py-2 text-[14px]">
+        <span class="text-ink">${n}</span><span class="font-medium tabular-nums text-ink">${fmt(p)}</span>
+      </div>`).join('<div class="border-t border-line"></div>');
+
+    const ship = state.shipping;
+    const colorName = state.config.color==='custom' ? `Custom ${state.config.customHex}` : (STD_COLORS.find(c=>c.id===state.config.color)?.name||'—');
+    const installName = INSTALL_TYPES.find(t=>t.id===state.config.installType)?.name || '—';
+    const fulfillName = {delivery:'Ship to my address', pickup:'Pickup in Tampa', self:'Self-arranged freight'}[state.delivery.fulfillment];
+
+    stepRoot().innerHTML = `
+      ${backBtn()}
+      ${stepHeader(5, 'Review your order', 'Everything before you choose how to pay.')}
+
+      <div class="rounded-2xl border border-line bg-white p-5">
+        <p class="text-[13px] font-medium text-muted">Configuration</p>
+        <div class="mt-2 grid grid-cols-2 gap-x-4 gap-y-1.5 text-[13px]">
+          <span class="text-muted">Install</span><span class="text-right font-medium text-ink">${installName}</span>
+          <span class="text-muted">Color</span><span class="text-right font-medium text-ink">${colorName}</span>
+          <span class="text-muted">Fulfillment</span><span class="text-right font-medium text-ink">${fulfillName}</span>
+          <span class="text-muted">Ship to</span><span class="text-right font-medium text-ink">${state.delivery.zip||'—'}</span>
+        </div>
+
+        <div class="mt-4 border-t border-line pt-2">${rows}</div>
+
+        <!-- subtotal rule -->
+        <div class="mt-1 flex items-center justify-between border-t-2 border-line pt-3 text-[15px]">
+          <span class="font-semibold text-ink">Subtotal</span>
+          <span class="font-semibold tabular-nums text-ink">${fmt(subtotal())}</span>
+        </div>
+
+        <!-- tax -->
+        <div class="mt-2 flex items-center justify-between text-[13px]">
+          <span class="text-muted">Sales tax</span>
+          <span class="font-medium text-muted">TBD — final tax approach pending</span>
+        </div>
+        <p class="mt-0.5 text-[11px] text-muted">Demo copy only. Stripe Tax, TaxJar, or final-invoice handling must be confirmed before production.</p>
+
+        <!-- THREE money lines -->
+        <div class="mt-4 rounded-xl border border-brand-sun2/60 bg-[#fffdf0] p-4">
+          <div class="flex items-center justify-between">
+            <span class="text-[14px] font-medium text-ink">Sample deposit shown today</span>
+            <span class="text-2xl font-semibold tabular-nums text-ink"><span class="text-[#b4860b]">${fmt(DEPOSIT)}</span></span>
+          </div>
+          <p class="mt-1 text-[11px] text-muted">No charge in this prototype. Deposit policy and refund terms are draft until Robert approves them.</p>
+        </div>
+
+        <div class="mt-3 flex items-center justify-between text-[14px]">
+          <span class="text-muted">Estimated balance before shipping</span>
+          <span class="font-medium tabular-nums text-muted">${fmt(balance())}</span>
+        </div>
+        <p class="mt-0.5 text-[11px] text-muted">(+ tax on final invoice)</p>
+
+        <!-- shipping quarantined -->
+        <div class="mt-4 border-t border-dashed border-line pt-3">
+          <div class="rounded-xl bg-recessed p-3">
+            <div class="flex items-center justify-between text-[13px]">
+              <span class="text-muted">Shipping estimate</span>
+              <span class="tabular-nums text-ink">${state.delivery.fulfillment==='delivery' ? fmt(ship.estimateAmount) : '$0'}</span>
+            </div>
+            <p class="mt-1 text-[11px] text-muted">Non-binding · billed separately · not in total.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- editorial proof: seen in real yards -->
+      <div class="mt-7">
+        <p class="text-[15px] font-semibold text-ink">Seen in real yards</p>
+        <div class="mt-3 grid grid-cols-2 gap-3">
+          ${gallery([
+            ['./assets/img/suburban.jpg','Suburban backyard, FL'],
+            ['./assets/img/river.jpg','River house retreat'],
+            ['./assets/img/tiny.jpg','Tiny-home oasis'],
+            ['./assets/img/container.jpg','Container pool, installed'],
+          ])}
+        </div>
+      </div>
+
+      ${faqBlock()}
+
+      ${continueBar('Continue to payment', false)}
+    `;
+  }
+  // NOTE: these source JPEGs are full-resolution brand assets (some ~3MB) shown
+  // here at ~150px. The production Next.js build runs them through next/image
+  // responsive sizing/optimization; this prototype links the originals directly.
+  function gallery(arr){
+    return arr.map(([src,cap]) => `
+      <figure class="overflow-hidden rounded-xl border border-line">
+        <img src="${src}" alt="${cap}" loading="lazy" class="h-32 w-full object-cover sm:h-36" />
+        <figcaption class="px-3 py-2 text-[12px] text-muted">${cap}</figcaption>
+      </figure>`).join('');
+  }
+  function faqBlock(){
+    const faqs = [
+      ['How fast is delivery?', 'The ReadyPool is built and ready to ship — typical build/ship windows are communicated after your deposit, far faster than a poured pool.'],
+      ['Who handles offload?', 'You provide the crane or forklift and a clear, level path on delivery day. We coordinate timing.'],
+      ['What site prep is needed?', 'Level, stable ground sized for a 20×8×4 unit. In-ground/partial installs need excavation arranged by you.'],
+      ['Is my deposit refundable?', 'Yes, per the Terms of Sale below — your $5,000 reserves a slot and is refundable within the stated window.'],
+    ];
+    return `
+      <div class="mt-7">
+        <p class="text-[15px] font-semibold text-ink">Common questions</p>
+        <div class="mt-3 divide-y divide-line rounded-2xl border border-line bg-white">
+          ${faqs.map(([q,a],i)=>`
+            <div class="acc" data-open="false">
+              <button type="button" data-acc class="flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left focusable">
+                <span class="text-[14px] font-medium text-ink">${q}</span>
+                <svg class="acc-chev h-4 w-4 shrink-0 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <div class="acc-panel"><div><p class="px-4 pb-4 text-[13px] text-muted">${a}</p></div></div>
+            </div>`).join('')}
+        </div>
+      </div>`;
+  }
+
+  /* -------- STEP 6: PAYMENT -------- */
+  function renderStep6(){
+    const cards = PAYMENT_METHODS.map(m => {
+      const on = state.payment.method === m.id;
+      const sunPill = m.recommended ? `<span class="ml-2 rounded-full bg-brand-sun px-2 py-0.5 text-[10px] font-semibold text-ink">Recommended — save ~${fmt(CARD_FEE_APPROX)}</span>` : '';
+      return `
+      <div class="pm-card selcard rounded-xl border border-line bg-white transition" data-open="${on}" data-selected="${on}">
+        <button type="button" data-pm="${m.id}" class="flex w-full items-center gap-3 p-4 text-left focusable" aria-pressed="${on}">
+          <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-line text-ink [&>svg]:h-5 [&>svg]:w-5">${m.icon}</span>
+          <span class="min-w-0 flex-1">
+            <span class="flex flex-wrap items-center text-[15px] font-medium text-ink">${m.name}${sunPill}</span>
+            <span class="mt-0.5 block text-[13px] text-muted">${m.sub}</span>
+          </span>
+          <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 ${on?'border-brand-blue':'border-line'}"><span class="h-2.5 w-2.5 rounded-full ${on?'bg-brand-blue':'bg-transparent'}"></span></span>
+        </button>
+        <div class="pm-panel"><div><div class="px-4 pb-4">${paymentPanel(m.id)}</div></div></div>
+      </div>`;
+    }).join('');
+
+    stepRoot().innerHTML = `
+      ${backBtn()}
+      ${stepHeader(6, 'How would you like to pay?', '')}
+      <div class="-mt-3 mb-4 rounded-xl bg-recessed p-4 text-[15px] text-ink">
+        <strong class="font-semibold">$5,000 today.</strong> The balance is due before we ship.
+      </div>
+
+      <!-- Persistent trust strip — shows for EVERY method (not gated on card selection). -->
+      <div class="mb-5 rounded-xl border border-line bg-white p-4">
+        <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-[12px] font-medium text-ink">
+          <span class="inline-flex items-center gap-1.5"><svg class="h-4 w-4 text-brand-cyanDark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true" focusable="false"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>256-bit SSL · bank-grade encryption</span>
+          <span class="inline-flex items-center gap-1.5"><svg class="h-4 w-4 text-brand-cyanDark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true" focusable="false"><path d="M12 2 4 5v6c0 5 3.5 8 8 11 4.5-3 8-6 8-11V5l-8-3z"/></svg>Processor TBD for production</span>
+        </div>
+        <p class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] text-muted">
+          <span>Lifetime shell · 3-year components warranty</span>
+          <span class="text-line">·</span>
+          <span>$5,000 deposit is refundable per terms</span>
+        </p>
+        <p class="mt-1.5 text-[12px] text-muted">Prefer a human? Call <a href="tel:+18133307599" class="font-medium text-brand-blue hover:text-brand-blueDark">(813) 330-7599</a>.</p>
+      </div>
+      <div class="space-y-2.5">${cards}</div>
+      <p id="payMsg" class="mt-3 hidden text-[12px] text-rose-600"></p>
+      ${continueBar('Continue to terms', false)}
+    `;
+
+    stepRoot().querySelectorAll('[data-pm]').forEach(b => b.addEventListener('click', () => {
+      const id = b.getAttribute('data-pm');
+      state.payment.method = id;
+      repaint(`[data-pm="${id}"]`);
+    }));
+    wirePaymentPanel();
+  }
+
+  function paymentPanel(id){
+    const ref = orderRef();
+    switch(id){
+      case 'ach': return `
+        <div class="rounded-xl border border-line bg-recessed p-4">
+          <div class="mb-3 rounded-lg border border-amber-300 bg-amber-50 p-3 text-[12px] font-semibold text-amber-900">SIMULATION — no bank connection and no charge will occur.</div>
+          <p class="text-[13px] text-ink">Production would securely link your bank with the approved processor. This demo shows the intended ACH flow only.</p>
+          <button type="button" id="achLink" class="mt-3 inline-flex items-center gap-2 rounded-xl border border-line bg-white px-4 py-2.5 text-sm font-medium text-ink hover:shadow-sm focusable">
+            <svg class="h-4 w-4 text-brand-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true" focusable="false"><path d="M3 21h18M5 21V10m14 11V10M12 3 3 8h18l-9-5z"/></svg>
+            Link your bank
+          </button>
+          <div id="achLinked" class="mt-3 hidden rounded-lg bg-white p-3 text-[13px]">
+            <span class="inline-flex items-center gap-2 text-emerald-600 font-medium"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true" focusable="false"><path d="m5 12 5 5 9-9"/></svg> Bank linked</span>
+            <span class="ml-2 tabular-nums text-muted">Chase ••••4021</span>
+          </div>
+          <p class="mt-2 text-[11px] text-muted">Simulated — no real bank connection.</p>
+        </div>`;
+      case 'card': return `
+        <div class="rounded-xl border border-line bg-recessed p-4">
+          <div class="mb-3 rounded-lg border border-amber-300 bg-amber-50 p-3 text-[12px] font-semibold text-amber-900">SIMULATION — card fields are disabled and no payment can be submitted.</div>
+          <p class="text-[13px] text-ink">A production card option may add a processing fee if Ready Pool chooses that policy — <button type="button" id="switchAch" class="font-medium text-brand-blue underline">switch to ACH</button> to avoid it.</p>
+          <div class="mt-3 space-y-3">
+            <div>
+              <label for="cc-num" class="block text-[12px] font-medium text-ink">Card number</label>
+              <input id="cc-num" inputmode="numeric" autocomplete="off" maxlength="19" placeholder="Demo only — card entry disabled" disabled
+                class="mt-1 w-full rounded-xl border border-line bg-white/60 px-3 py-2.5 text-[15px] tabular-nums text-muted focusable" />
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label for="cc-exp" class="block text-[12px] font-medium text-ink">Expiry</label>
+                <input id="cc-exp" inputmode="numeric" autocomplete="off" maxlength="5" placeholder="Demo" disabled
+                  class="mt-1 w-full rounded-xl border border-line bg-white/60 px-3 py-2.5 text-[15px] tabular-nums text-muted focusable" />
+              </div>
+              <div>
+                <label for="cc-cvc" class="block text-[12px] font-medium text-ink">CVC</label>
+                <input id="cc-cvc" inputmode="numeric" autocomplete="off" maxlength="4" placeholder="Demo" disabled
+                  class="mt-1 w-full rounded-xl border border-line bg-white/60 px-3 py-2.5 text-[15px] tabular-nums text-muted focusable" />
+              </div>
+            </div>
+            <p id="ccMsg" class="text-[11px] text-muted">Simulated only. Processor, card-fee policy, and production card fields are pending Robert.</p>
+          </div>
+        </div>
+        <div class="mt-2 flex items-center justify-center gap-4 text-[11px] text-muted">
+          <span class="inline-flex items-center gap-1"><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true" focusable="false"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Encrypted</span>
+          <span>·</span><span>Processor TBD</span>
+        </div>`;
+      case 'zelle': return `
+        <div class="rounded-xl border border-line bg-recessed p-4">
+          <div class="grid grid-cols-2 gap-y-2 text-[13px]">
+            <span class="text-muted">Zelle handle</span><span class="text-right font-medium text-ink">pay@readypool.com</span>
+            <span class="text-muted">Reference</span><span class="text-right font-mono text-ink">${ref}</span>
+          </div>
+          <div class="mt-3 rounded-lg border border-amber-300 bg-amber-50 p-3">
+            <p class="text-[12px] text-amber-800"><strong>Heads up:</strong> consumer Zelle limits are typically $1,000–$3,500/day, which will likely block a single $5,000 send. Split it across days, or use ACH/wire to send the full deposit at once.</p>
+          </div>
+          <p class="mt-2 text-[11px] text-muted">Manual method — your slot reserves now; the deposit confirms when funds arrive.</p>
+        </div>`;
+      case 'wire': return `
+        <div class="rounded-xl border border-line bg-recessed p-4">
+          <div class="grid grid-cols-2 gap-y-2 text-[13px]">
+            <span class="text-muted">Bank</span><span class="text-right font-medium text-ink">First Tampa Bank</span>
+            <span class="text-muted">Routing</span><span class="text-right font-mono text-ink">063•••••21</span>
+            <span class="text-muted">Account</span><span class="text-right font-mono text-ink">••••••8847</span>
+            <span class="text-muted">Reference</span><span class="text-right font-mono text-ink">${ref}</span>
+          </div>
+          <p class="mt-2 text-[11px] text-muted">Manual method — include the reference so we match your deposit.</p>
+        </div>`;
+      case 'check': return `
+        <div class="rounded-xl border border-line bg-recessed p-4">
+          <p class="text-[13px] text-ink">Make payable to <strong>Ready Pool LLC</strong> and mail to:</p>
+          <p class="mt-2 text-[13px] text-ink">Ready Pool LLC<br/>500 Channelside Dr, Suite 200<br/>Tampa, FL 33602</p>
+          <p class="mt-3 text-[13px]"><span class="text-muted">Memo:</span> <span class="font-mono text-ink">${ref}</span></p>
+          <p class="mt-2 text-[11px] text-muted">Manual method — slot reserves now; deposit confirms when the check clears.</p>
+        </div>`;
+      case 'financing': return `
+        <div class="rounded-xl border border-line bg-recessed p-4">
+          <p class="text-[13px] text-ink">Financing is shown as a V1 option only. Approval flow, partner, terms, and customer messaging are pending Robert.</p>
+          <button type="button" disabled class="mt-3 inline-flex items-center gap-2 rounded-xl border border-line bg-white/60 px-4 py-2.5 text-sm font-medium text-muted">
+            Financing placeholder
+          </button>
+          <p class="mt-2 text-[11px] text-muted">No external application opens in this local demo.</p>
+        </div>`;
+      default: return '';
+    }
+  }
+  function wirePaymentPanel(){
+    const ach = document.getElementById('achLink');
+    if (ach) ach.addEventListener('click', () => { document.getElementById('achLinked').classList.remove('hidden'); ach.textContent='Bank linked ✓'; ach.disabled=true; ach.classList.add('opacity-60'); });
+    const sw = document.getElementById('switchAch');
+    if (sw) sw.addEventListener('click', () => { state.payment.method='ach'; repaint('[data-pm="ach"]'); });
+    const num = document.getElementById('cc-num');
+    if (num){
+      num.addEventListener('input', e => {
+        let v = e.target.value.replace(/\D/g,'').slice(0,16);
+        e.target.value = v.replace(/(.{4})/g,'$1 ').trim();
+      });
+      const exp = document.getElementById('cc-exp');
+      exp.addEventListener('input', e => {
+        let v = e.target.value.replace(/\D/g,'').slice(0,4);
+        if (v.length>=3) v = v.slice(0,2)+'/'+v.slice(2);
+        e.target.value = v;
+      });
+      document.getElementById('cc-cvc').addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g,'').slice(0,4); });
+    }
+  }
+  // ONE order-level reference is intentionally shared across every manual method
+  // (Zelle / Wire / Check). It is a single deposit, so the same reference must
+  // appear wherever the buyer pays — Step 6 panel, Step 7, and the thank-you screen.
+  function orderRef(){
+    if (!state._ref) state._ref = 'RP-' + Math.random().toString(36).slice(2,7).toUpperCase() + '-' + Date.now().toString().slice(-4);
+    return state._ref;
+  }
+
+  /* -------- STEP 7: TERMS & SUBMIT -------- */
+  function renderStep7(){
+    const m = PAYMENT_METHODS.find(x=>x.id===state.payment.method);
+    const isInstant = m && !m.manual;
+    const submitVerb = isInstant ? `Preview ${fmt(DEPOSIT)} deposit flow` : 'Preview build reservation';
+
+    const terms = [
+      ['DRAFT deposit & refund policy','Draft only: the $5,000 deposit language, refund window, and incurred-cost policy must be approved by Ready Pool before production.'],
+      ['DRAFT build lead time & ship window','Draft only: build and shipping windows must be confirmed in writing by Ready Pool after Robert approves production copy.'],
+      ['DRAFT offload responsibility','Draft only: crane, forklift, driveway, and placement responsibilities must be confirmed in Ready Pool legal terms.'],
+      ['DRAFT site-prep responsibility','Draft only: pad, excavation, structure, and engineering requirements must be confirmed before customer-facing launch.'],
+      ['Shipping is non-binding & quoted separately','The shipping figure shown is a non-binding estimate and is not part of your order total. Final freight is quoted before shipping.'],
+      ['Sales tax TBD','Sales tax handling is pending: Stripe Tax, TaxJar, or final invoice calculation must be selected before production.'],
+      ['DRAFT force majeure / delays','Draft only: delay language requires Ready Pool approval before use.'],
+    ];
+
+    stepRoot().innerHTML = `
+      ${backBtn()}
+      ${stepHeader(7, 'Review draft terms & preview submit', `Payment method shown: ${m ? m.name : '—'}. This prototype does not charge, reserve, or submit a real order.`)}
+
+      <div class="mb-4 rounded-xl border border-amber-300 bg-amber-50 p-4 text-[13px] text-amber-900">
+        <strong>DRAFT TERMS — pending Ready Pool approval.</strong> This screen is for workflow review only and is not a customer-facing legal agreement.
+      </div>
+
+      <div class="rounded-2xl border border-line bg-white">
+        <div class="divide-y divide-line">
+          ${terms.map(([t,b])=>`
+            <div class="acc" data-open="false">
+              <button type="button" data-acc class="flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left focusable">
+                <span class="text-[14px] font-medium text-ink">${t}</span>
+                <svg class="acc-chev h-4 w-4 shrink-0 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <div class="acc-panel"><div><p class="px-4 pb-4 text-[13px] text-muted">${b}</p></div></div>
+            </div>`).join('')}
+        </div>
+      </div>
+
+      <label class="mt-5 flex cursor-pointer items-start gap-3 rounded-xl border border-line bg-white p-4 has-[:checked]:border-brand-blue has-[:checked]:bg-[#f5f8ff]">
+        <input id="termsChk" type="checkbox" ${state.consent.termsAccepted?'checked':''}
+          class="mt-0.5 h-5 w-5 shrink-0 rounded border-line text-brand-blue focusable" />
+        <span class="text-[14px] text-ink">I acknowledge these are <span class="font-medium">draft demo terms</span> for review only.</span>
+      </label>
+
+      <div class="mt-8">
+        <button id="submitBtn" disabled
+          class="w-full inline-flex h-[52px] items-center justify-center gap-2 rounded-xl bg-brand-blue px-6 text-base font-semibold text-white shadow-sm transition hover:bg-brand-blueDark active:scale-[.99] disabled:opacity-40 disabled:cursor-not-allowed">
+          <span id="submitLabel">${submitVerb}</span>
+        </button>
+        <p class="mt-3 flex items-center justify-center gap-2 text-[12px] text-muted">${sunPip}<span>This preview does not charge, reserve, or submit a real order.</span></p>
+      </div>
+    `;
+
+    const chk = document.getElementById('termsChk');
+    const btn = document.getElementById('submitBtn');
+    chk.addEventListener('change', () => { state.consent.termsAccepted = chk.checked; btn.disabled = !chk.checked; });
+    btn.addEventListener('click', submitOrder);
+  }
+
+  /* -------- SUBMIT -> ORDER RECORD -------- */
+  function submitOrder(){
+    const m = PAYMENT_METHODS.find(x=>x.id===state.payment.method);
+    const instant = m && !m.manual;
+    const status = instant ? 'deposit_paid' : 'pending_payment';
+    const now = new Date();
+
+    const order = {
+      orderId: 'RP-' + now.getFullYear() + '-' + Math.random().toString(36).slice(2,8).toUpperCase(),
+      createdAt: now.toISOString(),
+      status,
+      customer: { name: state.delivery.name, email: state.delivery.email, phone: state.delivery.phone },
+      delivery: { address: state.delivery.address, zip: state.delivery.zip, installType: state.config.installType, siteNotes: state.delivery.siteNotes },
+      config: {
+        baseModel: state.config.baseModel,
+        color: state.config.color === 'custom' ? state.config.customHex : state.config.color,
+        upgrades: UPGRADES.filter(u=>state.upgrades[u.id]).map(u=>({id:u.id,name:u.name,price:u.price})),
+      },
+      pricing: { subtotal: subtotal(), depositAmount: DEPOSIT, balanceAmount: balance() },
+      shipping: { estimateAmount: state.delivery.fulfillment==='delivery'?state.shipping.estimateAmount:0, distanceMiles: state.shipping.distanceMiles, fulfillment: state.delivery.fulfillment },
+      payment: { method: state.payment.method, depositCaptured: instant, processorRef: instant ? ('sim_'+Math.random().toString(36).slice(2,12)) : orderRef() },
+      consent: { termsAccepted: true, timestamp: now.toISOString() },
+    };
+    state.order = order;
+    renderThankYou(order);
+  }
+
+  /* -------- THANK YOU (status-aware) -------- */
+  function renderThankYou(order){
+    document.getElementById('mobileBar').classList.add('hidden');
+    const paid = order.status === 'deposit_paid';
+    const m = PAYMENT_METHODS.find(x=>x.id===order.payment.method);
+
+    const manualInstr = !paid ? `
+      <div class="mt-6 rounded-2xl border border-line bg-white p-5 text-left">
+        <p class="text-[14px] font-semibold text-ink">Finish your deposit (${m.name})</p>
+        <div class="mt-3">${paymentPanel(order.payment.method)}</div>
+      </div>` : '';
+
+    const emailPreview = paid ? `
+      <div class="mt-6 overflow-hidden rounded-2xl border border-line bg-white text-left">
+        <div class="border-b border-line bg-recessed px-5 py-3 text-[12px] text-muted">
+          <span class="font-medium text-ink">Ready Pool</span> &lt;orders@readypool.com&gt; → ${order.customer.email||'you@email.com'}
+          <div class="mt-0.5 font-medium text-ink">Your $5,000 deposit is confirmed — build scheduled 🎉</div>
+        </div>
+        <div class="p-5 text-[13px] text-ink">
+          <p>Hi ${order.customer.name||'there'},</p>
+          <p class="mt-2">We received your <strong>${fmt(DEPOSIT)}</strong> deposit for <strong>The ReadyPool 20×8×4</strong>. Your build slot is reserved (order <span class="font-mono">${order.orderId}</span>).</p>
+          <p class="mt-2 text-muted">Next: we'll confirm your build/ship window and coordinate offload. Estimated balance before shipping: <span class="tabular-nums">${fmt(order.pricing.balanceAmount)}</span> (+ tax on final invoice).</p>
+        </div>
+      </div>` : '';
+
+    document.getElementById('app').innerHTML = `
+      <section class="water-grad">
+        <div class="mx-auto max-w-2xl px-5 py-14 text-center sm:py-20">
+          <span class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-white/95 shadow-md">
+            <svg class="h-7 w-7 text-brand-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true" focusable="false"><path d="m5 12 5 5 9-9"/></svg>
+          </span>
+          <h1 class="mt-5 text-3xl font-semibold tracking-tight2 text-white sm:text-4xl">
+            ${paid ? "Your build is scheduled." : "Your slot is reserved."}
+          </h1>
+          <p class="mx-auto mt-3 max-w-md text-[15px] text-white/85">
+            ${paid
+              ? `Your ${fmt(DEPOSIT)} deposit is confirmed. Watch your inbox — our team's onboarding sequence is on its way.`
+              : `Your build slot is held. It's confirmed the moment your ${fmt(DEPOSIT)} deposit is received — here's how to finish.`}
+          </p>
+          <div class="mx-auto mt-5 inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-2 text-[13px] text-white backdrop-blur">
+            <span class="opacity-80">Order</span><span class="font-mono">${order.orderId}</span>
+            <span class="opacity-50">·</span>
+            <span class="rounded-full ${paid?'bg-emerald-400/90 text-emerald-950':'bg-brand-sun text-ink'} px-2 py-0.5 text-[11px] font-semibold">${paid?'deposit_paid':'pending_payment'}</span>
+          </div>
+        </div>
+      </section>
+
+      <div class="mx-auto max-w-2xl px-5 pb-24 -mt-8">
+        <div class="overflow-hidden rounded-2xl border border-line bg-white shadow-md">
+          <img src="./assets/img/underwater.webp" alt="Enjoying a ReadyPool" loading="lazy" class="h-44 w-full object-cover sm:h-56" />
+          <div class="p-5">
+            <div class="flex items-center justify-between text-[14px]">
+              <span class="text-muted">Subtotal</span><span class="font-medium tabular-nums text-ink">${fmt(order.pricing.subtotal)}</span>
+            </div>
+            <div class="mt-1 flex items-center justify-between text-[14px]">
+              <span class="text-muted">Deposit ${paid?'paid':'due'}</span><span class="font-semibold tabular-nums text-ink"><span class="text-[#b4860b]">${fmt(DEPOSIT)}</span></span>
+            </div>
+            <div class="mt-1 flex items-center justify-between text-[14px]">
+              <span class="text-muted">Estimated balance before shipping</span><span class="tabular-nums text-muted">${fmt(order.pricing.balanceAmount)}</span>
+            </div>
+            <p class="mt-1 text-[11px] text-muted">(+ tax on final invoice · shipping quoted separately, not in total)</p>
+          </div>
+        </div>
+
+        ${emailPreview}
+        ${manualInstr}
+
+        <p class="mt-6 text-center text-[13px] text-muted">An automated onboarding sequence from our team is on its way${order.customer.email?` to <span class="text-ink">${order.customer.email}</span>`:''}. Questions? Call <a href="tel:+18133307599" class="font-medium text-brand-blue">(813) 330-7599</a>.</p>
+
+        <!-- transparency: order record JSON -->
+        <div class="acc mt-6 rounded-2xl border border-line bg-white" data-open="false">
+          <button type="button" data-acc class="flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left focusable">
+            <span class="text-[13px] font-medium text-ink">View captured order record (developer)</span>
+            <svg class="acc-chev h-4 w-4 shrink-0 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+          <div class="acc-panel"><div>
+            <div class="px-4 pb-4">
+              <div class="flex justify-end"><button id="copyJson" class="mb-2 rounded-lg border border-line px-2.5 py-1 text-[11px] font-medium text-muted hover:text-ink">Copy JSON</button></div>
+              <pre class="overflow-x-auto rounded-xl bg-ink p-4 text-[11px] leading-relaxed text-emerald-200"><code id="jsonOut">${escapeHtml(JSON.stringify(order,null,2))}</code></pre>
+              <p class="mt-2 text-[11px] text-muted">This is the exact object the production Next.js build would persist.</p>
+            </div>
+          </div></div>
+        </div>
+
+        <div class="mt-8 text-center">
+          <button id="restartBtn" class="text-[13px] font-medium text-brand-blue hover:text-brand-blueDark">Start a new order</button>
+        </div>
+      </div>
+    `;
+    window.scrollTo({top:0,behavior:'smooth'});
+    bindAccordions(document.getElementById('app'));
+    const copy = document.getElementById('copyJson');
+    copy.addEventListener('click', async () => {
+      try { await navigator.clipboard.writeText(JSON.stringify(order,null,2)); copy.textContent='Copied ✓'; setTimeout(()=>copy.textContent='Copy JSON',1500);} catch(e){ copy.textContent='Copy failed'; }
+    });
+    document.getElementById('restartBtn').addEventListener('click', () => location.reload());
+  }
+  function escapeHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  /* ============================================================
+     LIVE SUMMARY (rail + drawer mirror)
+     ============================================================ */
+  function summaryHTML(){
+    const lines = [];
+    lines.push(['Base pool · 20×8×4', fmt(BASE_PRICE), false]);
+    const installLineName = INSTALL_TYPES.find(t=>t.id===state.config.installType)?.name;
+    lines.push([`Install · ${installLineName||'—'}`, installLineName?'No charge':'—', false]);
+    const customBillable = customColorBillable();
+    const colorName = state.config.color==='custom'
+      ? (customBillable ? `Color · Custom ${state.config.customHex}` : `Color · Custom (enter hex)`)
+      : `Color · ${STD_COLORS.find(c=>c.id===state.config.color)?.name||'—'}`;
+    lines.push([colorName, customBillable?`+${fmt(CUSTOM_COLOR_FEE)}`:'—', customBillable]);
+    UPGRADES.forEach(u => { if (state.upgrades[u.id]) lines.push([u.name, `+${fmt(u.price)}`, true]); });
+
+    const installName = INSTALL_TYPES.find(t=>t.id===state.config.installType)?.name;
+    const payName = PAYMENT_METHODS.find(p=>p.id===state.payment.method)?.name;
+    const showShip = state.delivery.fulfillment==='delivery' && state.shipping.estimateAmount>0;
+
+    const rows = lines.map(([n,p,hl]) => `
+      <div class="lineitem-in flex items-start justify-between gap-3 py-2 text-[13px]">
+        <span class="text-muted">${n}</span>
+        <span class="shrink-0 font-medium tabular-nums ${hl?'text-ink':'text-muted'}">${p}</span>
+      </div>`).join('<div class="border-t border-line/70"></div>');
+
+    return `
+      <div class="flex items-center gap-3 pb-4">
+        <img src="./assets/img/suburban.jpg" alt="" loading="lazy" class="h-12 w-16 rounded-lg object-cover" onerror="this.style.display='none'" />
+        <div class="leading-tight">
+          <p class="text-[13px] font-semibold text-ink">The ReadyPool</p>
+          <p class="text-[12px] text-muted">20×8×4 ${installName?'· '+installName:''}</p>
+        </div>
+      </div>
+
+      <div class="border-t border-line pt-1">${rows}</div>
+
+      <div class="mt-1 flex items-center justify-between border-t-2 border-line pt-3 text-[14px]">
+        <span class="font-semibold text-ink">Subtotal</span>
+        <span class="font-semibold tabular-nums text-ink" data-anim="subtotal">${fmt(subtotal())}</span>
+      </div>
+
+      <!-- hero money line -->
+      <div class="mt-3 rounded-xl border-t border-brand-sun2 bg-[#fffdf0] p-3">
+        <div class="flex items-center justify-between">
+          <span class="text-[13px] font-medium text-ink">Sample deposit</span>
+          <span class="text-xl font-semibold tabular-nums"><span class="text-[#b4860b]">${fmt(DEPOSIT)}</span></span>
+        </div>
+      </div>
+
+      <div class="mt-3 flex items-center justify-between text-[13px]">
+        <span class="text-muted">Estimated balance<br/><span class="text-[11px]">(+ tax on final invoice)</span></span>
+        <span class="tabular-nums text-muted" data-anim="balance">${fmt(balance())}</span>
+      </div>
+
+      ${payName ? `
+      <div class="mt-3 flex items-center justify-between rounded-lg bg-recessed px-3 py-2 text-[12px]">
+        <span class="text-muted">Paying by</span>
+        <span class="font-medium text-ink">${payName}</span>
+      </div>` : ''}
+
+      <!-- shipping quarantined -->
+      <div class="mt-3 border-t border-dashed border-line pt-3">
+        <div class="rounded-lg bg-recessed p-3">
+          <div class="flex items-center justify-between text-[12px]">
+            <span class="text-muted">Shipping estimate</span>
+            <span class="tabular-nums text-ink">${showShip?fmt(state.shipping.estimateAmount):'—'}</span>
+          </div>
+          <p class="mt-1 text-[10px] leading-snug text-muted">Non-binding · billed separately · not in total.</p>
+        </div>
+      </div>
+
+      <p class="mt-3 flex items-center gap-2 border-t border-line pt-3 text-[11px] text-muted">${sunPip}<span>Demo only — no charge or order submission.</span></p>
+    `;
+  }
+
+  let lastSub = subtotal(), lastBal = balance();
+  function renderSummary(){
+    const html = summaryHTML();
+    const rail = document.getElementById('railBody');
+    const drawer = document.getElementById('drawerBody');
+    if (rail) rail.innerHTML = html;
+    if (drawer) drawer.innerHTML = html;
+    // Live mobile-bar order figure — the deposit stays $5,000 but the order value
+    // changes as upgrades/custom color toggle, so the always-visible bar must update.
+    const ns = subtotal(), nb = balance();
+    const mobileSub = document.getElementById('mobileBarSubtotal');
+    if (mobileSub) mobileSub.textContent = fmt(ns);
+    // tick animation on change
+    if (ns!==lastSub || nb!==lastBal){
+      document.querySelectorAll('[data-anim]').forEach(el=>{ el.classList.add('price-tick'); setTimeout(()=>el.classList.remove('price-tick'),200); });
+      lastSub=ns; lastBal=nb;
+    }
+  }
+
+  /* ============================================================
+     NAV / WIRING
+     ============================================================ */
+  const RENDERERS = { 1:renderStep1, 2:renderStep2, 3:renderStep3, 4:renderStep4, 5:renderStep5, 6:renderStep6, 7:renderStep7 };
+
+  function goTo(step, dir){
+    state.dir = dir || 'fwd';
+    state.step = step;
+    setProgress();
+    RENDERERS[step]();
+    const root = stepRoot();
+    root.classList.remove('step-enter','step-enter-back');
+    void root.offsetWidth;
+    root.classList.add(state.dir==='fwd'?'step-enter':'step-enter-back');
+    bindStep();
+    renderSummary();
+    window.scrollTo({top:0,behavior:'smooth'});
+    // Move focus to the new step heading so screen readers announce the step
+    // title on each transition (the heading text includes "Step n of 7").
+    const heading = document.getElementById('stepHeading');
+    if (heading) heading.focus({ preventScroll:true });
+  }
+
+  // Re-render the current step in place (after an in-step change) WITHOUT the
+  // slide animation, and re-bind its Continue/Back/accordion handlers. Every
+  // renderStepN() rebuilds the DOM, so handlers must be re-attached each time.
+  // Because the activated control is destroyed and recreated, keyboard focus
+  // would otherwise reset to <body>. Pass a CSS selector for the logically
+  // equivalent control so focus is restored to it after the rebuild — without
+  // this the wizard is unusable for keyboard / screen-reader users.
+  function repaint(focusSelector){
+    RENDERERS[state.step]();
+    bindStep();
+    renderSummary();
+    if (focusSelector){
+      const el = stepRoot().querySelector(focusSelector);
+      if (el) el.focus();
+    }
+  }
+
+  // Bind the per-render handlers (Continue, Back, accordions) for the current step.
+  function bindStep(){
+    bindAccordions(stepRoot());
+    bindContinueBack();
+  }
+
+  function validateCurrent(){
+    if (state.step===1) return validateStep1();
+    if (state.step===4) return validateStep4();
+    if (state.step===6){
+      if (!state.payment.method){ const m=document.getElementById('payMsg'); m.textContent='Please choose a payment method.'; m.classList.remove('hidden'); return false; }
+    }
+    return true;
+  }
+
+  function bindContinueBack(){
+    const cont = stepRoot().querySelector('[data-continue]');
+    if (cont) cont.addEventListener('click', () => {
+      if (!validateCurrent()) return;
+      if (state.step < 7) goTo(state.step+1,'fwd');
+    });
+    const back = stepRoot().querySelector('[data-back]');
+    if (back) back.addEventListener('click', () => { if (state.step>1) goTo(state.step-1,'back'); });
+  }
+
+  function bindAccordions(scope){
+    scope.querySelectorAll('[data-acc]').forEach(btn => {
+      if (btn._bound) return; btn._bound=true;
+      btn.addEventListener('click', () => {
+        const acc = btn.closest('.acc');
+        acc.setAttribute('data-open', acc.getAttribute('data-open')==='true' ? 'false' : 'true');
+      });
+    });
+  }
+
+  /* ---- partner review gate ---- */
+  const REVIEW_ALLOWED_EMAILS = new Set([
+    'joshua@iconicbrandgroup.com',
+    'john@iconicbrandgroup.com',
+  ]);
+  const REVIEW_PASSWORD_SHA256 = '693f76bb6bf0ad9f885f320c17d0e049e8b8e987b18c655af2cd10bad3ac053d';
+  const REVIEW_PASSWORD_BASE64 = 'MUljb25pYzIh';
+  const REVIEW_SESSION_KEY = 'readyPoolPartnerReviewAccessV1';
+
+  function normalizeReviewEmail(value){
+    return String(value || '').trim().toLowerCase();
+  }
+
+  async function sha256Hex(value){
+    if (!window.crypto || !window.crypto.subtle || !window.TextEncoder) return null;
+    const data = new TextEncoder().encode(value);
+    const hash = await window.crypto.subtle.digest('SHA-256', data);
+    return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  async function reviewPasswordMatches(value){
+    try {
+      const hash = await sha256Hex(value);
+      if (hash) return hash === REVIEW_PASSWORD_SHA256;
+    } catch (_) {}
+    try {
+      return btoa(unescape(encodeURIComponent(value))) === REVIEW_PASSWORD_BASE64;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  function unlockPartnerReview(email){
+    const gate = document.getElementById('reviewGate');
+    document.body.classList.remove('auth-locked');
+    if (gate) gate.classList.add('hidden');
+    try {
+      localStorage.setItem(REVIEW_SESSION_KEY, JSON.stringify({ email, unlockedAt: new Date().toISOString() }));
+    } catch (_) {}
+    const first = document.getElementById('openWizardBtn');
+    if (first) first.focus();
+  }
+
+  function restorePartnerReview(){
+    try {
+      const saved = JSON.parse(localStorage.getItem(REVIEW_SESSION_KEY) || 'null');
+      if (saved && REVIEW_ALLOWED_EMAILS.has(normalizeReviewEmail(saved.email))) {
+        unlockPartnerReview(normalizeReviewEmail(saved.email));
+        return true;
+      }
+    } catch (_) {}
+    return false;
+  }
+
+  function bindReviewGate(){
+    const form = document.getElementById('reviewGateForm');
+    if (!form) return;
+    const emailInput = document.getElementById('reviewEmail');
+    const passwordInput = document.getElementById('reviewPassword');
+    const error = document.getElementById('reviewGateError');
+    const showError = msg => {
+      error.textContent = msg;
+      error.classList.remove('hidden');
+    };
+    form.addEventListener('submit', async event => {
+      event.preventDefault();
+      error.classList.add('hidden');
+      const email = normalizeReviewEmail(emailInput.value);
+      if (!REVIEW_ALLOWED_EMAILS.has(email)) {
+        showError('Use joshua@iconicbrandgroup.com or john@iconicbrandgroup.com for this review.');
+        emailInput.focus();
+        return;
+      }
+      if (!(await reviewPasswordMatches(passwordInput.value))) {
+        showError('That password did not match. Check capitalization and punctuation, then try again.');
+        passwordInput.focus();
+        return;
+      }
+      unlockPartnerReview(email);
+    });
+  }
+
+  bindReviewGate();
+  restorePartnerReview();
+
+  /* ---- hero -> wizard ---- */
+  document.getElementById('openWizardBtn').addEventListener('click', () => {
+    const hero = document.getElementById('hero');
+    hero.classList.add('fade-out');
+    setTimeout(() => {
+      hero.style.display='none';
+      const app = document.getElementById('app');
+      app.classList.remove('hidden');
+      app.classList.add('fade-rise');
+      goTo(1,'fwd');
+    }, 320);
+  });
+
+  /* ---- mobile drawer (modal: focus moves in, Tab is trapped, focus returns) ---- */
+  let drawerPrevFocus = null;
+  function drawerFocusables(){
+    return Array.from(document.getElementById('mobileDrawer')
+      .querySelectorAll('a[href], button:not([disabled]), input, textarea, [tabindex]:not([tabindex="-1"])'))
+      .filter(el => el.offsetParent !== null);
+  }
+  function trapDrawerTab(e){
+    if (e.key !== 'Tab') return;
+    const f = drawerFocusables();
+    if (!f.length) return;
+    const first = f[0], last = f[f.length-1];
+    if (e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+  }
+  function openDrawer(){
+    drawerPrevFocus = document.activeElement;
+    document.getElementById('drawerScrim').classList.remove('hidden');
+    const drawer = document.getElementById('mobileDrawer');
+    requestAnimationFrame(()=>{ drawer.classList.add('open'); });
+    document.body.classList.add('drawer-open');
+    // make the background truthfully inert for aria-modal
+    const app = document.getElementById('app');
+    if (app) app.setAttribute('aria-hidden','true');
+    document.getElementById('closeDrawerBtn').focus();
+    drawer.addEventListener('keydown', trapDrawerTab);
+  }
+  function closeDrawer(){
+    const drawer = document.getElementById('mobileDrawer');
+    drawer.classList.remove('open');
+    document.getElementById('drawerScrim').classList.add('hidden');
+    document.body.classList.remove('drawer-open');
+    drawer.removeEventListener('keydown', trapDrawerTab);
+    const app = document.getElementById('app');
+    if (app) app.removeAttribute('aria-hidden');
+    // return focus to the trigger
+    const trigger = drawerPrevFocus || document.getElementById('viewOrderBtn');
+    if (trigger && typeof trigger.focus === 'function') trigger.focus();
+    drawerPrevFocus = null;
+  }
+  document.getElementById('viewOrderBtn').addEventListener('click', openDrawer);
+  document.getElementById('closeDrawerBtn').addEventListener('click', closeDrawer);
+  document.getElementById('drawerScrim').addEventListener('click', closeDrawer);
+
+  /* ---- chat ---- */
+  document.querySelectorAll('.chatBtn').forEach(b => b.addEventListener('click', () => {
+    document.getElementById('chatPop').classList.toggle('hidden');
+  }));
+
+  /* keyboard: Esc closes drawer/chat */
+  document.addEventListener('keydown', e => {
+    if (e.key==='Escape'){ closeDrawer(); document.getElementById('chatPop').classList.add('hidden'); }
+  });
+
+  // initial summary (in case wizard opened via deep state)
+  renderSummary();
+  </script>
+</body>
+</html>
