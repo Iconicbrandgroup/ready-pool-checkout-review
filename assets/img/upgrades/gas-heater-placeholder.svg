@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 240" role="img" aria-label="Advanced Propane/Natural Gas Heater — product photo coming soon">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1d4ed8"/>
+      <stop offset=".55" stop-color="#2563eb"/>
+      <stop offset="1" stop-color="#06b6d4"/>
+    </linearGradient>
+  </defs>
+  <rect width="360" height="240" fill="url(#bg)"/>
+  <g opacity=".14" stroke="#ffffff" stroke-width="2" fill="none">
+    <path d="M-20 190c40-26 80 26 120 0s80-26 120 0 80 26 140 0" stroke-linecap="round"/>
+    <path d="M-20 210c40-26 80 26 120 0s80-26 120 0 80 26 140 0" stroke-linecap="round"/>
+  </g>
+  <g transform="translate(180 96)">
+    <circle r="44" fill="#ffffff" opacity=".95"/>
+    <path d="M0-26c8 12 18 20 18 33A18 18 0 0 1 0 25 18 18 0 0 1-18 7c0-8 4-13 8-19-1 8 2 12 6 14-2-10 1-20 4-28z" fill="#2563eb"/>
+    <path d="M0-2c4 6 8 9 8 15A8 8 0 0 1 0 21a8 8 0 0 1-8-8c0-6 4-9 8-15z" fill="#ffd349"/>
+  </g>
+  <text x="180" y="180" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="600" fill="#ffffff">Propane / Natural Gas Heater</text>
+  <text x="180" y="204" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="500" fill="#ffffff" opacity=".85">Product photo coming soon</text>
+</svg>
