@@ -448,7 +448,7 @@
                 <input id="reviewPassword" type="password" autocomplete="current-password"
                   class="mt-1 w-full rounded-xl border border-line bg-white px-3 py-3 text-[15px] text-ink focusable" />
               </div>
-              <p id="reviewGateError" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-[13px] text-red-700"></p>
+              <p id="reviewGateError" role="alert" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-[13px] text-red-700"></p>
               <button type="submit"
                 class="inline-flex h-[52px] w-full items-center justify-center rounded-xl bg-brand-blue px-5 text-base font-semibold text-white shadow-sm transition hover:bg-brand-blueDark active:scale-[.99]">
                 Open review prototype
@@ -502,7 +502,7 @@
             <li class="flex items-center gap-2"><svg class="h-4 w-4 shrink-0 text-brand-cyanLight" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true" focusable="false"><path d="M12 6v6l4 2"/><circle cx="12" cy="12" r="9"/></svg>Self-serve in minutes</li>
             <li class="flex items-center gap-2"><svg class="h-4 w-4 shrink-0 text-brand-cyanLight" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true" focusable="false"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>$5,000 deposit today</li>
             <li class="flex items-center gap-2"><svg class="h-4 w-4 shrink-0 text-brand-cyanLight" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true" focusable="false"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>Card &amp; ACH instant</li>
-            <li class="flex items-center gap-2"><svg class="h-4 w-4 shrink-0 text-brand-cyanLight" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg>Zero staff touch points</li>
+            <li class="flex items-center gap-2"><svg class="h-4 w-4 shrink-0 text-brand-cyanLight" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg>No pushy sales calls</li>
           </ul>
         </div>
       </div>
@@ -568,7 +568,7 @@
       <div class="mx-auto flex max-w-md items-center justify-between">
         <div class="leading-tight">
           <div class="text-[11px] text-muted">Deposit today</div>
-          <div class="text-lg font-semibold tabular-nums text-ink"><span class="text-brand-sun" style="text-shadow:0 1px 0 rgba(0,0,0,.18)">$5,000</span></div>
+          <div class="text-lg font-semibold tabular-nums text-ink">$5,000</div>
           <div class="text-[11px] text-muted tabular-nums">Order <span id="mobileBarSubtotal" data-anim="mobileSub" class="font-medium text-ink">$5,000</span></div>
         </div>
         <button id="viewOrderBtn" class="inline-flex items-center gap-1.5 rounded-xl border border-line bg-recessed px-4 py-2.5 text-sm font-medium text-ink active:scale-[.98]">
@@ -673,11 +673,17 @@
     noUpgrades: false, // explicit "No upgrades" selection (client-requested option)
     delivery: { zip:'', address:'', name:'', phone:'', email:'', siteNotes:'', fulfillment:'delivery' },
     shipping: { estimateAmount: 0, distanceMiles: 0 },
-    payment: { method: null },
+    payment: { method: null, achLinked: false },
     consent: { termsAccepted:false },
     order: null,
     dir: 'fwd',
   };
+
+  // ---- ESCAPING (user-sourced strings are re-rendered into innerHTML on every repaint) ----
+  const escapeHtml = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  // Attribute-context escape: also neutralize the quotes that delimit value="..." so a
+  // name/address/hex containing " or ' (or 5'6") can't break out or get truncated.
+  const escAttr = s => escapeHtml(s).replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 
   // ---- MONEY HELPERS ----
   const fmt = n => '$' + Math.round(n).toLocaleString('en-US');
@@ -864,17 +870,17 @@
           <span class="text-[14px] font-semibold tabular-nums text-ink">+${fmt(CUSTOM_COLOR_FEE)}</span>
         </button>
 
-        <div class="acc-panel ${isCustom?'':'hidden'}" id="hexWrap" data-open="${isCustom}">
-          <div>
-            <div class="mt-3 rounded-xl border border-line bg-recessed p-4">
-              <label for="hexInput" class="block text-[13px] font-medium text-ink">Hex color (#RRGGBB)</label>
-              <div class="mt-2 flex items-center gap-3">
-                <input id="hexInput" type="text" inputmode="text" autocomplete="off" maxlength="7" placeholder="#1e90ff"
-                  value="${state.config.customHex}"
-                  class="w-40 rounded-xl border border-line bg-white px-3 py-2.5 text-[15px] tabular-nums text-ink focusable" />
-                <span id="hexChip" class="h-10 w-10 rounded-xl border border-line" style="background:${hexValid?state.config.customHex:'#ffffff'}"></span>
-                <span id="hexMsg" class="text-[12px] ${hexValid?'text-emerald-600':'text-muted'}">${state.config.customHex ? (hexValid?'Looks good':'Use format #RRGGBB') : 'Live preview'}</span>
-              </div>
+        <!-- Custom-color hex input: plain hidden/shown block (the .acc-panel grid-collapse
+             pattern only expands under an .acc[data-open] ancestor, which this fieldset is not). -->
+        <div class="${isCustom?'':'hidden'}" id="hexWrap">
+          <div class="mt-3 rounded-xl border border-line bg-recessed p-4">
+            <label for="hexInput" class="block text-[13px] font-medium text-ink">Hex color (#RRGGBB)</label>
+            <div class="mt-2 flex items-center gap-3">
+              <input id="hexInput" type="text" inputmode="text" autocomplete="off" maxlength="7" placeholder="#1e90ff"
+                value="${escAttr(state.config.customHex)}"
+                class="w-40 rounded-xl border border-line bg-white px-3 py-2.5 text-[15px] tabular-nums text-ink focusable" />
+              <span id="hexChip" class="h-10 w-10 rounded-xl border border-line" style="background:${hexValid?state.config.customHex:'#ffffff'}"></span>
+              <span id="hexMsg" class="text-[12px] ${hexValid?'text-emerald-600':'text-muted'}">${state.config.customHex ? (hexValid?'Looks good':'Use format #RRGGBB') : 'Live preview'}</span>
             </div>
           </div>
         </div>
@@ -883,33 +889,11 @@
       <!-- upgrades (client edit: on the same page as exterior colors, Tesla-style) -->
       <fieldset class="mt-7">
         <legend class="text-[15px] font-semibold text-ink">Upgrades</legend>
-        <p class="mb-3 text-[13px] text-muted">Optional equipment with real product photos. Toggle any to watch your order update.</p>
+        <p class="mb-3 text-[13px] text-muted">Optional equipment — add any combination, or choose No upgrades.</p>
         <div class="grid grid-cols-1 gap-3">${upgradeCards}${noUpgradesCard}</div>
       </fieldset>
 
-      <!-- light entry gate: email + zip (powers shipping estimate + abandoned-cart recovery) -->
-      <fieldset class="mt-7 rounded-2xl border border-line bg-white p-5">
-        <legend class="px-1 text-[15px] font-semibold text-ink">Where should we send your build details?</legend>
-        <p class="mb-4 text-[13px] text-muted">We use this to estimate delivery and email your order. <!-- powers abandoned-cart recovery in the real build --></p>
-        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div>
-            <label for="emailGate" class="block text-[13px] font-medium text-ink">Email</label>
-            <input id="emailGate" type="email" inputmode="email" autocomplete="email" placeholder="you@email.com" value="${state.delivery.email}"
-              class="mt-1.5 w-full rounded-xl border border-line bg-white px-3 py-2.5 text-[15px] text-ink focusable" />
-            <p class="mt-1 text-[11px] text-muted">We email your order details and never share your address.</p>
-            <!-- Production build: this gate fires a cart-capture / identify event and
-                 persists email + ZIP to localStorage so an abandoned order can resume
-                 after a refresh. This prototype keeps state in-memory only. -->
-          </div>
-          <div>
-            <label for="zipGate" class="block text-[13px] font-medium text-ink">Delivery ZIP</label>
-            <input id="zipGate" type="text" inputmode="numeric" autocomplete="postal-code" maxlength="5" placeholder="33602" value="${state.delivery.zip}"
-              class="mt-1.5 w-full rounded-xl border border-line bg-white px-3 py-2.5 text-[15px] tabular-nums text-ink focusable" />
-          </div>
-        </div>
-        <p id="gateMsg" class="mt-2 hidden text-[12px] text-rose-600"></p>
-      </fieldset>
-
+      <p id="gateMsg" role="alert" class="mt-6 hidden text-[13px] text-rose-600"></p>
       ${continueBar('Continue to delivery & shipping', false)}
     `;
 
@@ -955,26 +939,15 @@
         renderSummary();
       });
     }
-    // gate inputs
-    document.getElementById('emailGate').addEventListener('input', e => { state.delivery.email = e.target.value.trim(); });
-    document.getElementById('zipGate').addEventListener('input', e => {
-      state.delivery.zip = e.target.value.replace(/\D/g,'').slice(0,5);
-      e.target.value = state.delivery.zip;
-    });
   }
 
   function validateStep1(){
-    const email = state.delivery.email, zip = state.delivery.zip;
     const msg = document.getElementById('gateMsg');
-    const emailOk = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email);
-    const zipOk = /^\d{5}$/.test(zip);
     const customOk = state.config.color !== 'custom' || /^#[0-9a-fA-F]{6}$/.test(state.config.customHex);
     let err = '';
     if (!state.config.installType) err = 'Please choose an installation type.';
     else if (!state.config.color) err = 'Please choose an exterior color.';
-    else if (!customOk) err = 'Enter a valid hex color (#RRGGBB) or pick a standard color.';
-    else if (!emailOk) err = 'Enter a valid email so we can send your order.';
-    else if (!zipOk) err = 'Enter a 5-digit delivery ZIP for your shipping estimate.';
+    else if (!customOk) err = 'Enter a valid hex color (#RRGGBB) for your custom color, or pick a standard color.';
     if (err){ msg.textContent = err; msg.classList.remove('hidden'); return false; }
     msg.classList.add('hidden');
     return true;
@@ -983,6 +956,7 @@
   /* -------- STEP 2: DELIVERY & SHIPPING (all shipping collection on one page) -------- */
   function renderStep2(){
     const d = state.delivery;
+    const hasZip = /^\d{5}$/.test(state.delivery.zip);
     const ship = estimateShipping(state.delivery.zip);
     state.shipping = { estimateAmount: ship.amount, distanceMiles: ship.miles };
 
@@ -1007,7 +981,7 @@
       <div class="rounded-2xl border border-line bg-white p-5">
         <label for="zip3" class="block text-[13px] font-medium text-ink">Destination ZIP</label>
         <div class="mt-1.5 flex items-center gap-3">
-          <input id="zip3" type="text" inputmode="numeric" maxlength="5" autocomplete="postal-code" value="${state.delivery.zip}"
+          <input id="zip3" type="text" inputmode="numeric" maxlength="5" autocomplete="postal-code" value="${escAttr(state.delivery.zip)}"
             class="w-40 rounded-xl border border-line bg-white px-3 py-2.5 text-[15px] tabular-nums text-ink focusable" />
           <button id="recalcBtn" type="button" class="rounded-xl border border-line bg-recessed px-4 py-2.5 text-sm font-medium text-ink hover:shadow-sm focusable">Estimate</button>
         </div>
@@ -1020,9 +994,9 @@
                 Delivery from Tampa, FL
                 <span class="rounded-full border border-line bg-white px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-muted">non-binding estimate</span>
               </p>
-              <p class="mt-0.5 text-[12px] text-muted tabular-nums" id="shipMeta">~${ship.miles.toLocaleString()} mi · $${SHIP_RATE_PER_MILE.toFixed(2)}/mi</p>
+              <p class="mt-0.5 text-[12px] text-muted tabular-nums" id="shipMeta">${hasZip ? `~${ship.miles.toLocaleString()} mi · $${SHIP_RATE_PER_MILE.toFixed(2)}/mi` : `Enter a 5-digit ZIP · $${SHIP_RATE_PER_MILE.toFixed(2)}/mi`}</p>
             </div>
-            <p class="text-2xl font-semibold tabular-nums text-ink" id="shipAmt">${fmt(ship.amount)}</p>
+            <p class="text-2xl font-semibold tabular-nums text-ink" id="shipAmt">${hasZip ? fmt(ship.amount) : '—'}</p>
           </div>
           <p class="mt-3 border-t border-line pt-3 text-[12px] text-muted">Freight is billed/arranged separately and is <strong class="font-medium text-ink">not included</strong> in your order total. Final freight is quoted before shipping.
           <!-- real build: this distance call runs server-side to protect the mapping API key --></p>
@@ -1031,9 +1005,9 @@
 
       <!-- fulfillment options -->
       <fieldset class="mt-6">
-        <legend class="mb-3 text-[15px] font-semibold text-ink">Or choose a no-cost option</legend>
+        <legend class="mb-3 text-[15px] font-semibold text-ink">How should we get it to you?</legend>
         <div class="grid grid-cols-1 gap-2.5">
-          ${opt('delivery','Ship to my address', `Estimated above · ~${ship.miles.toLocaleString()} mi from Tampa`, ship.amount)}
+          ${opt('delivery','Ship to my address', hasZip ? `Estimated above · ~${ship.miles.toLocaleString()} mi from Tampa` : 'Enter a ZIP above for your estimate', ship.amount)}
           ${opt('pickup','Pick up in Tampa','Collect from our Tampa, FL yard.',0)}
           ${opt('self',"I'll arrange my own freight",'We load; you handle transport.',0)}
         </div>
@@ -1045,42 +1019,49 @@
         <div class="space-y-5 rounded-2xl border border-line bg-white p-5">
           <div>
             <label for="f-name" class="block text-[13px] font-medium text-ink">Full name</label>
-            <input id="f-name" type="text" autocomplete="name" value="${d.name}" placeholder="Jane Rivera"
+            <input id="f-name" type="text" autocomplete="name" value="${escAttr(d.name)}" placeholder="Jane Rivera"
               class="mt-1.5 w-full rounded-xl border border-line bg-white px-3 py-2.5 text-[15px] text-ink focusable" />
           </div>
           <div>
             <label for="f-addr" class="block text-[13px] font-medium text-ink">Delivery address</label>
-            <input id="f-addr" type="text" autocomplete="street-address" value="${d.address}" placeholder="123 Lakeshore Dr, Tampa, FL 33602"
+            <input id="f-addr" type="text" autocomplete="street-address" value="${escAttr(d.address)}" placeholder="123 Lakeshore Dr, Tampa, FL 33602"
               class="mt-1.5 w-full rounded-xl border border-line bg-white px-3 py-2.5 text-[15px] text-ink focusable" />
           </div>
           <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <label for="f-phone" class="block text-[13px] font-medium text-ink">Phone</label>
-              <input id="f-phone" type="tel" inputmode="tel" autocomplete="tel" value="${d.phone}" placeholder="(813) 555-0142"
+              <input id="f-phone" type="tel" inputmode="tel" autocomplete="tel" value="${escAttr(d.phone)}" placeholder="(813) 555-0142"
                 class="mt-1.5 w-full rounded-xl border border-line bg-white px-3 py-2.5 text-[15px] tabular-nums text-ink focusable" />
             </div>
             <div>
               <label for="f-email" class="block text-[13px] font-medium text-ink">Email</label>
-              <input id="f-email" type="email" inputmode="email" autocomplete="email" value="${d.email}" placeholder="you@email.com"
+              <input id="f-email" type="email" inputmode="email" autocomplete="email" value="${escAttr(d.email)}" placeholder="you@email.com"
                 class="mt-1.5 w-full rounded-xl border border-line bg-white px-3 py-2.5 text-[15px] text-ink focusable" />
-              <p class="mt-1 text-[11px] text-muted">Pre-filled from earlier.</p>
+              <p class="mt-1 text-[11px] text-muted">We email your order details and never share your address.</p>
             </div>
           </div>
           <div>
             <label for="f-notes" class="block text-[13px] font-medium text-ink">Delivery notes / site access <span class="font-normal text-muted">(optional)</span></label>
             <textarea id="f-notes" rows="3" placeholder="Gate code, crane access, narrow driveway, best drop point…"
-              class="mt-1.5 w-full rounded-xl border border-line bg-white px-3 py-2.5 text-[15px] text-ink focusable">${d.siteNotes}</textarea>
+              class="mt-1.5 w-full rounded-xl border border-line bg-white px-3 py-2.5 text-[15px] text-ink focusable">${escapeHtml(d.siteNotes)}</textarea>
           </div>
         </div>
       </fieldset>
-      <p id="step2Msg" class="mt-3 hidden text-[12px] text-rose-600"></p>
+      <p id="step2Msg" role="alert" class="mt-3 hidden text-[13px] text-rose-600"></p>
       ${continueBar('Continue to review', false)}
     `;
 
+    // Live-recompute the shipping estimate as the ZIP changes so the estimate box,
+    // fulfillment price, review page, summary rail, and order JSON never disagree
+    // with the entered ZIP. (repaint re-runs renderStep2 -> estimateShipping and
+    // restores focus to the ZIP field.)
     document.getElementById('zip3').addEventListener('input', e => {
-      state.delivery.zip = e.target.value.replace(/\D/g,'').slice(0,5); e.target.value = state.delivery.zip;
+      const v = e.target.value.replace(/\D/g,'').slice(0,5);
+      const changed = v !== state.delivery.zip;
+      state.delivery.zip = v; e.target.value = v;
+      if (changed) repaint('#zip3');
     });
-    document.getElementById('recalcBtn').addEventListener('click', () => { repaint('#recalcBtn'); });
+    document.getElementById('recalcBtn').addEventListener('click', () => { repaint('#zip3'); });
     stepRoot().querySelectorAll('[data-fulfill]').forEach(b => b.addEventListener('click', () => {
       const id = b.getAttribute('data-fulfill');
       state.delivery.fulfillment = id;
@@ -1189,7 +1170,7 @@
   function renderStep4(){
     const cards = PAYMENT_METHODS.map(m => {
       const on = state.payment.method === m.id;
-      const sunPill = m.recommended ? `<span class="ml-2 rounded-full bg-brand-sun px-2 py-0.5 text-[10px] font-semibold text-ink">Recommended — save ~${fmt(CARD_FEE_APPROX)}</span>` : '';
+      const sunPill = m.recommended ? `<span class="ml-2 rounded-full bg-brand-sun px-2 py-0.5 text-[10px] font-semibold text-ink">Recommended — no card fees</span>` : '';
       return `
       <div class="pm-card selcard rounded-xl border border-line bg-white transition" data-open="${on}" data-selected="${on}">
         <button type="button" data-pm="${m.id}" class="flex w-full items-center gap-3 p-4 text-left focusable" aria-pressed="${on}">
@@ -1230,18 +1211,18 @@
         </p>
         <p class="mt-1.5 text-[12px] text-muted">Prefer a human? Call <a href="tel:+18133307599" class="font-medium text-brand-blue hover:text-brand-blueDark">(813) 330-7599</a>.</p>
       </div>
-      <div class="space-y-2.5">${cards}</div>
-      <p id="payMsg" class="mt-3 hidden text-[12px] text-rose-600"></p>
+      <div class="space-y-2.5" role="group" aria-label="Choose a payment method">${cards}</div>
 
       <!-- Terms & Conditions (client edit #8): external link + required checkbox, like any online checkout.
            The separate draft-terms step is removed; the linked document is a DRAFT placeholder pending
            Ready Pool's final terms, and it is downloadable. -->
       <div class="mt-6 rounded-2xl border border-line bg-white p-4">
         <label class="flex cursor-pointer items-start gap-3">
-          <input id="termsChk" type="checkbox" ${state.consent.termsAccepted?'checked':''}
+          <input id="termsChk" type="checkbox" aria-required="true" ${state.consent.termsAccepted?'checked':''}
             class="mt-0.5 h-5 w-5 shrink-0 rounded border-line text-brand-blue focusable" />
           <span class="text-[14px] text-ink">I have read and agree to the Ready Pool
-            <a href="${TERMS_URL}" target="_blank" rel="noopener noreferrer" class="font-medium text-brand-blue underline underline-offset-2 hover:text-brand-blueDark">Terms and Conditions</a>.</span>
+            <a href="${TERMS_URL}" target="_blank" rel="noopener noreferrer" class="font-medium text-brand-blue underline underline-offset-2 hover:text-brand-blueDark">Terms and Conditions</a>.
+            <span class="font-medium text-rose-600">(required)</span></span>
         </label>
         <p class="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 pl-8 text-[12px] text-muted">
           <a href="${TERMS_URL}" download class="inline-flex items-center gap-1 font-medium text-brand-blue hover:text-brand-blueDark">
@@ -1253,8 +1234,9 @@
         </p>
       </div>
 
-      <div class="mt-6">
-        <button id="submitBtn" ${state.consent.termsAccepted && state.payment.method ? '' : 'disabled'}
+      <p id="payMsg" role="alert" class="mt-4 hidden text-[13px] text-rose-600"></p>
+      <div class="mt-3">
+        <button id="submitBtn"
           class="w-full inline-flex h-[52px] items-center justify-center gap-2 rounded-xl bg-brand-blue px-6 text-base font-semibold text-white shadow-sm transition hover:bg-brand-blueDark active:scale-[.99] disabled:opacity-40 disabled:cursor-not-allowed">
           <span id="submitLabel">${submitVerb}</span>
         </button>
@@ -1269,19 +1251,30 @@
     }));
     wirePaymentPanel();
 
+    // Standard-checkout pattern: the submit button stays enabled and validation runs
+    // on click, so keyboard/screen-reader users get a real, announced error (role=alert
+    // on #payMsg) instead of a silently-disabled button with no reachable message.
     const chk = document.getElementById('termsChk');
     const btn = document.getElementById('submitBtn');
-    const syncSubmit = () => {
-      btn.disabled = !(state.consent.termsAccepted && state.payment.method);
+    const msg = document.getElementById('payMsg');
+    const relabel = () => {
       document.getElementById('submitLabel').textContent = state.payment.method
         ? ((PAYMENT_METHODS.find(x=>x.id===state.payment.method)||{}).manual ? 'Preview build reservation' : `Preview ${fmt(DEPOSIT)} deposit flow`)
         : 'Choose a payment method above';
     };
-    chk.addEventListener('change', () => { state.consent.termsAccepted = chk.checked; syncSubmit(); });
+    chk.addEventListener('change', () => {
+      state.consent.termsAccepted = chk.checked;
+      if (chk.checked) msg.classList.add('hidden');
+      relabel();
+    });
     btn.addEventListener('click', () => {
-      const msg = document.getElementById('payMsg');
-      if (!state.payment.method){ msg.textContent='Please choose a payment method.'; msg.classList.remove('hidden'); return; }
-      if (!state.consent.termsAccepted){ msg.textContent='Please agree to the Terms and Conditions to continue.'; msg.classList.remove('hidden'); return; }
+      if (!state.payment.method){ msg.textContent='Please choose a payment method above.'; msg.classList.remove('hidden'); return; }
+      if (!state.consent.termsAccepted){
+        msg.textContent='Please check the box to agree to the Terms and Conditions before you continue.';
+        msg.classList.remove('hidden');
+        chk.focus();
+        return;
+      }
       msg.classList.add('hidden');
       submitOrder();
     });
@@ -1294,11 +1287,11 @@
         <div class="rounded-xl border border-line bg-recessed p-4">
           <div class="mb-3 rounded-lg border border-amber-300 bg-amber-50 p-3 text-[12px] font-semibold text-amber-900">SIMULATION — no bank connection and no charge will occur.</div>
           <p class="text-[13px] text-ink">Production would securely link your bank with the approved processor. This demo shows the intended ACH flow only.</p>
-          <button type="button" id="achLink" class="mt-3 inline-flex items-center gap-2 rounded-xl border border-line bg-white px-4 py-2.5 text-sm font-medium text-ink hover:shadow-sm focusable">
+          <button type="button" id="achLink" ${state.payment.achLinked?'disabled':''} class="mt-3 inline-flex items-center gap-2 rounded-xl border border-line bg-white px-4 py-2.5 text-sm font-medium text-ink hover:shadow-sm focusable ${state.payment.achLinked?'opacity-60':''}">
             <svg class="h-4 w-4 text-brand-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true" focusable="false"><path d="M3 21h18M5 21V10m14 11V10M12 3 3 8h18l-9-5z"/></svg>
-            Link your bank
+            ${state.payment.achLinked?'Bank linked ✓':'Link your bank'}
           </button>
-          <div id="achLinked" class="mt-3 hidden rounded-lg bg-white p-3 text-[13px]">
+          <div id="achLinked" class="mt-3 ${state.payment.achLinked?'':'hidden'} rounded-lg bg-white p-3 text-[13px]">
             <span class="inline-flex items-center gap-2 text-emerald-600 font-medium"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true" focusable="false"><path d="m5 12 5 5 9-9"/></svg> Bank linked</span>
             <span class="ml-2 tabular-nums text-muted">Chase ••••4021</span>
           </div>
@@ -1376,7 +1369,7 @@
   }
   function wirePaymentPanel(){
     const ach = document.getElementById('achLink');
-    if (ach) ach.addEventListener('click', () => { document.getElementById('achLinked').classList.remove('hidden'); ach.textContent='Bank linked ✓'; ach.disabled=true; ach.classList.add('opacity-60'); });
+    if (ach) ach.addEventListener('click', () => { state.payment.achLinked = true; document.getElementById('achLinked').classList.remove('hidden'); ach.textContent='Bank linked ✓'; ach.disabled=true; ach.classList.add('opacity-60'); });
     const sw = document.getElementById('switchAch');
     if (sw) sw.addEventListener('click', () => { state.payment.method='ach'; repaint('[data-pm="ach"]'); });
     const num = document.getElementById('cc-num');
@@ -1396,7 +1389,7 @@
   }
   // ONE order-level reference is intentionally shared across every manual method
   // (Zelle / Wire / Check). It is a single deposit, so the same reference must
-  // appear wherever the buyer pays — Step 6 panel, Step 7, and the thank-you screen.
+  // appear wherever the buyer pays — the Step 4 payment panel and the thank-you screen.
   function orderRef(){
     if (!state._ref) state._ref = 'RP-' + Math.random().toString(36).slice(2,7).toUpperCase() + '-' + Date.now().toString().slice(-4);
     return state._ref;
@@ -1449,11 +1442,11 @@
     const emailPreview = paid ? `
       <div class="mt-6 overflow-hidden rounded-2xl border border-line bg-white text-left">
         <div class="border-b border-line bg-recessed px-5 py-3 text-[12px] text-muted">
-          <span class="font-medium text-ink">Ready Pool</span> &lt;orders@readypool.com&gt; → ${order.customer.email||'you@email.com'}
+          <span class="font-medium text-ink">Ready Pool</span> &lt;orders@readypool.com&gt; → ${escapeHtml(order.customer.email||'you@email.com')}
           <div class="mt-0.5 font-medium text-ink">Your $5,000 deposit is confirmed — build scheduled 🎉</div>
         </div>
         <div class="p-5 text-[13px] text-ink">
-          <p>Hi ${order.customer.name||'there'},</p>
+          <p>Hi ${escapeHtml(order.customer.name||'there')},</p>
           <p class="mt-2">We received your <strong>${fmt(DEPOSIT)}</strong> deposit for <strong>The ReadyPool 20×8×4</strong>. Your build slot is reserved (order <span class="font-mono">${order.orderId}</span>).</p>
           <p class="mt-2 text-muted">Next: we'll confirm your build/ship window and coordinate offload. Estimated balance before shipping: <span class="tabular-nums">${fmt(order.pricing.balanceAmount)}</span> (+ tax on final invoice).</p>
         </div>
@@ -1465,7 +1458,7 @@
           <span class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-white/95 shadow-md">
             <svg class="h-7 w-7 text-brand-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true" focusable="false"><path d="m5 12 5 5 9-9"/></svg>
           </span>
-          <h1 class="mt-5 text-3xl font-semibold tracking-tight2 text-white sm:text-4xl">
+          <h1 id="thankYouHeading" tabindex="-1" class="mt-5 text-3xl font-semibold tracking-tight2 text-white outline-none sm:text-4xl">
             ${paid ? "Your build is scheduled." : "Your slot is reserved."}
           </h1>
           <p class="mx-auto mt-3 max-w-md text-[15px] text-white/85">
@@ -1489,7 +1482,7 @@
               <span class="text-muted">Subtotal</span><span class="font-medium tabular-nums text-ink">${fmt(order.pricing.subtotal)}</span>
             </div>
             <div class="mt-1 flex items-center justify-between text-[14px]">
-              <span class="text-muted">Deposit ${paid?'paid':'due'}</span><span class="font-semibold tabular-nums text-ink"><span class="text-[#b4860b]">${fmt(DEPOSIT)}</span></span>
+              <span class="text-muted">Deposit ${paid?'paid':'due'}</span><span class="font-semibold tabular-nums text-ink">${fmt(DEPOSIT)}</span>
             </div>
             <div class="mt-1 flex items-center justify-between text-[14px]">
               <span class="text-muted">Estimated balance before shipping</span><span class="tabular-nums text-muted">${fmt(order.pricing.balanceAmount)}</span>
@@ -1501,7 +1494,7 @@
         ${emailPreview}
         ${manualInstr}
 
-        <p class="mt-6 text-center text-[13px] text-muted">An automated onboarding sequence from our team is on its way${order.customer.email?` to <span class="text-ink">${order.customer.email}</span>`:''}. Questions? Call <a href="tel:+18133307599" class="font-medium text-brand-blue">(813) 330-7599</a>.</p>
+        <p class="mt-6 text-center text-[13px] text-muted">An automated onboarding sequence from our team is on its way${order.customer.email?` to <span class="text-ink">${escapeHtml(order.customer.email)}</span>`:''}. Questions? Call <a href="tel:+18133307599" class="font-medium text-brand-blue">(813) 330-7599</a>.</p>
 
         <!-- transparency: order record JSON -->
         <div class="acc mt-6 rounded-2xl border border-line bg-white" data-open="false">
@@ -1524,6 +1517,10 @@
       </div>
     `;
     window.scrollTo({top:0,behavior:'smooth'});
+    // Move focus to the confirmation heading so screen readers announce the
+    // order result (this view is rendered outside goTo(), which normally handles focus).
+    const tyHeading = document.getElementById('thankYouHeading');
+    if (tyHeading) tyHeading.focus({ preventScroll:true });
     bindAccordions(document.getElementById('app'));
     const copy = document.getElementById('copyJson');
     copy.addEventListener('click', async () => {
@@ -1531,7 +1528,7 @@
     });
     document.getElementById('restartBtn').addEventListener('click', () => location.reload());
   }
-  function escapeHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  // escapeHtml/escAttr are defined once near the money helpers (top of this script).
 
   /* ============================================================
      LIVE SUMMARY (rail + drawer mirror)
@@ -1828,6 +1825,10 @@
   }
   function closeDrawer(){
     const drawer = document.getElementById('mobileDrawer');
+    // Guard: only act when the drawer is actually open, so a global Escape press
+    // (e.g. dismissing an autofill dropdown mid-form) never steals focus to
+    // the View-order button on narrow viewports.
+    if (!drawer.classList.contains('open')) return;
     drawer.classList.remove('open');
     document.getElementById('drawerScrim').classList.add('hidden');
     document.body.classList.remove('drawer-open');
