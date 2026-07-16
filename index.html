@@ -389,73 +389,10 @@
     }
     /* prevent body scroll under drawer */
     body.drawer-open { overflow: hidden; }
-    body.auth-locked #hero,
-    body.auth-locked #app,
-    body.auth-locked #viewOrderBtn,
-    body.auth-locked #mobileDrawer,
-    body.auth-locked #drawerScrim,
-    body.auth-locked #chatPop {
-      display: none !important;
-    }
-    body.auth-locked {
-      overflow: auto;
-      background: #f8fbff;
-    }
   </style>
 </head>
 
-<body class="auth-locked min-h-screen antialiased">
-
-  <section id="reviewGate" class="min-h-[100svh] bg-[#f8fbff] px-4 py-8">
-    <div class="mx-auto flex min-h-[calc(100svh-4rem)] max-w-6xl items-center justify-center">
-      <div class="grid w-full overflow-hidden rounded-2xl border border-line bg-white shadow-sm md:grid-cols-[1fr_.9fr]">
-        <div class="relative hidden min-h-[560px] water-grad md:block">
-          <div class="absolute inset-0 bg-gradient-to-r from-brand-blueDeep/55 via-brand-blue/10 to-transparent"></div>
-          <img src="./assets/img/suburban.jpg" alt="The ReadyPool installed in a backyard"
-            class="h-full w-full object-cover mix-blend-normal" />
-          <div class="absolute inset-x-0 bottom-0 p-8 text-white">
-            <img src="./assets/img/logo.png" alt="Ready Pool" class="mb-5 h-10 w-auto rounded bg-white/95 px-3 py-2 shadow-sm" />
-            <h1 class="max-w-md text-4xl font-semibold tracking-tight2">The pool that's ready today.</h1>
-            <p class="mt-3 max-w-md text-sm leading-6 text-white/90">
-              A 20×8×4 shipping-container pool, built and shipped from Tampa. Configure yours and reserve your build in minutes.
-            </p>
-          </div>
-        </div>
-        <div class="flex min-h-[560px] items-center p-6 sm:p-10">
-          <div class="w-full">
-            <img src="./assets/img/logo.png" alt="Ready Pool" class="h-9 w-auto md:hidden" />
-            <p class="mt-8 text-xs font-semibold uppercase tracking-[.16em] text-brand-blue md:mt-0">Early access</p>
-            <h2 class="mt-3 text-3xl font-semibold tracking-tight2 text-ink">Sign in to continue</h2>
-            <p class="mt-3 text-sm leading-6 text-muted">
-              Enter the email and access code you were given to start your order.
-            </p>
-            <form id="reviewGateForm" class="mt-8 space-y-4" novalidate>
-              <div>
-                <label for="reviewEmail" class="block text-[13px] font-medium text-ink">Email</label>
-                <input id="reviewEmail" type="email" autocomplete="email" inputmode="email"
-                  placeholder="joshua@iconicbrandgroup.com"
-                  class="mt-1 w-full rounded-xl border border-line bg-white px-3 py-3 text-[15px] text-ink focusable" />
-              </div>
-              <div>
-                <label for="reviewPassword" class="block text-[13px] font-medium text-ink">Access code</label>
-                <input id="reviewPassword" type="password" autocomplete="current-password"
-                  class="mt-1 w-full rounded-xl border border-line bg-white px-3 py-3 text-[15px] text-ink focusable" />
-              </div>
-              <p id="reviewGateError" role="alert" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-[13px] text-red-700"></p>
-              <button type="submit"
-                class="inline-flex h-[52px] w-full items-center justify-center rounded-xl bg-brand-blue px-5 text-base font-semibold text-white shadow-sm transition hover:bg-brand-blueDark active:scale-[.99]">
-                Continue
-              </button>
-            </form>
-            <div class="mt-6 flex items-center gap-2 text-[12px] leading-5 text-muted">
-              <svg class="h-4 w-4 shrink-0 text-brand-cyanDark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true" focusable="false"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
-              Your information is encrypted. You won't be charged until you review and place your order.
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+<body class="min-h-screen antialiased">
 
   <!-- ============================================================ HERO ============================================================ -->
   <section id="hero" class="relative min-h-[100svh] water-grad overflow-hidden">
@@ -1631,91 +1568,6 @@
       });
     });
   }
-
-  /* ---- partner review gate ---- */
-  const REVIEW_ALLOWED_EMAILS = new Set([
-    'joshua@iconicbrandgroup.com',
-    'john@iconicbrandgroup.com',
-  ]);
-  const REVIEW_PASSWORD_SHA256 = '693f76bb6bf0ad9f885f320c17d0e049e8b8e987b18c655af2cd10bad3ac053d';
-  const REVIEW_PASSWORD_BASE64 = 'MUljb25pYzIh';
-  const REVIEW_SESSION_KEY = 'readyPoolPartnerReviewAccessV1';
-
-  function normalizeReviewEmail(value){
-    return String(value || '').trim().toLowerCase();
-  }
-
-  async function sha256Hex(value){
-    if (!window.crypto || !window.crypto.subtle || !window.TextEncoder) return null;
-    const data = new TextEncoder().encode(value);
-    const hash = await window.crypto.subtle.digest('SHA-256', data);
-    return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
-  }
-
-  async function reviewPasswordMatches(value){
-    try {
-      const hash = await sha256Hex(value);
-      if (hash) return hash === REVIEW_PASSWORD_SHA256;
-    } catch (_) {}
-    try {
-      return btoa(unescape(encodeURIComponent(value))) === REVIEW_PASSWORD_BASE64;
-    } catch (_) {
-      return false;
-    }
-  }
-
-  function unlockPartnerReview(email){
-    const gate = document.getElementById('reviewGate');
-    document.body.classList.remove('auth-locked');
-    if (gate) gate.classList.add('hidden');
-    try {
-      localStorage.setItem(REVIEW_SESSION_KEY, JSON.stringify({ email, unlockedAt: new Date().toISOString() }));
-    } catch (_) {}
-    const first = document.getElementById('openWizardBtn');
-    if (first) first.focus();
-  }
-
-  function restorePartnerReview(){
-    try {
-      const saved = JSON.parse(localStorage.getItem(REVIEW_SESSION_KEY) || 'null');
-      if (saved && REVIEW_ALLOWED_EMAILS.has(normalizeReviewEmail(saved.email))) {
-        unlockPartnerReview(normalizeReviewEmail(saved.email));
-        return true;
-      }
-    } catch (_) {}
-    return false;
-  }
-
-  function bindReviewGate(){
-    const form = document.getElementById('reviewGateForm');
-    if (!form) return;
-    const emailInput = document.getElementById('reviewEmail');
-    const passwordInput = document.getElementById('reviewPassword');
-    const error = document.getElementById('reviewGateError');
-    const showError = msg => {
-      error.textContent = msg;
-      error.classList.remove('hidden');
-    };
-    form.addEventListener('submit', async event => {
-      event.preventDefault();
-      error.classList.add('hidden');
-      const email = normalizeReviewEmail(emailInput.value);
-      if (!REVIEW_ALLOWED_EMAILS.has(email)) {
-        showError('Use joshua@iconicbrandgroup.com or john@iconicbrandgroup.com for this review.');
-        emailInput.focus();
-        return;
-      }
-      if (!(await reviewPasswordMatches(passwordInput.value))) {
-        showError('That password did not match. Check capitalization and punctuation, then try again.');
-        passwordInput.focus();
-        return;
-      }
-      unlockPartnerReview(email);
-    });
-  }
-
-  bindReviewGate();
-  restorePartnerReview();
 
   /* ---- hero -> wizard ---- */
   document.getElementById('openWizardBtn').addEventListener('click', () => {
